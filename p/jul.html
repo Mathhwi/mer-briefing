@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128225;</text></svg>">
+</head><body>
+<div style="max-width:1180px;margin:0 auto;padding:24px clamp(16px,4vw,40px) 0">
+<a href="../index.html" style="font-family:ui-monospace,Consolas,monospace;font-size:12px;
+   color:#1F5C63;text-decoration:none">&larr; 메르 브리핑</a>
+</div>
+<title>메르 브리핑 — 카드뉴스 프로토타입</title>
+<style>
+  :root{
+    --paper:#EEF2F1; --surface:#FFFFFF; --line:#D3DEDC; --ink:#101617;
+    --muted:#5C6B6B; --accent:#1F5C63; --accent-soft:#E2ECEA; --brass:#9A7B12;
+    --brass-soft:#F5EEDA; --shadow:0 1px 2px rgba(16,22,23,.06),0 8px 24px rgba(16,22,23,.07);
+    --serif:"Nanum Myeongjo","NanumMyeongjo",Batang,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Consolas,"D2Coding",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--paper:#0C1112;--surface:#151D1E;--line:#263334;--ink:#E6EDEC;
+      --muted:#93A5A4;--accent:#5FAFA4;--accent-soft:#17292A;--brass:#D9BE5F;
+      --brass-soft:#241F0F;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}
+  }
+  :root[data-theme="dark"]{--paper:#0C1112;--surface:#151D1E;--line:#263334;--ink:#E6EDEC;
+    --muted:#93A5A4;--accent:#5FAFA4;--accent-soft:#17292A;--brass:#D9BE5F;
+    --brass-soft:#241F0F;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}
+  :root[data-theme="light"]{--paper:#EEF2F1;--surface:#FFFFFF;--line:#D3DEDC;--ink:#101617;
+    --muted:#5C6B6B;--accent:#1F5C63;--accent-soft:#E2ECEA;--brass:#9A7B12;
+    --brass-soft:#F5EEDA;--shadow:0 1px 2px rgba(16,22,23,.06),0 8px 24px rgba(16,22,23,.07);}
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(16px,4vw,40px) 80px}
+
+  /* ---------- masthead ---------- */
+  .mast{display:flex;flex-direction:column;gap:18px;padding-bottom:26px;
+    border-bottom:2px solid var(--ink)}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .kicker .dot{width:5px;height:5px;border-radius:50%;background:var(--brass);display:inline-block}
+  h1{font-family:var(--serif);font-weight:700;font-size:clamp(30px,5.4vw,52px);
+    line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
+  .sub{color:var(--muted);max-width:62ch;margin:0;font-size:15.5px}
+
+  .stats{display:flex;flex-wrap:wrap;gap:0;margin-top:8px;border:1px solid var(--line);
+    border-radius:2px;background:var(--surface);overflow:hidden}
+  .stat{flex:1 1 130px;padding:13px 16px;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font-family:var(--mono);font-size:20px;font-variant-numeric:tabular-nums;
+    color:var(--accent);letter-spacing:-.02em}
+  .stat span{font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+
+  .note{margin-top:22px;padding:14px 16px;border-left:3px solid var(--brass);
+    background:var(--brass-soft);font-size:13.5px;color:var(--ink);border-radius:0 2px 2px 0}
+  .note b{font-weight:700}
+
+  /* ---------- dispatch ---------- */
+  .dispatch{margin-top:clamp(38px,6vw,64px)}
+  .dhead{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+  .dnum{font-family:var(--mono);font-size:12px;color:var(--brass);letter-spacing:.1em;
+    font-variant-numeric:tabular-nums}
+  .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:3px 8px;
+    border:1px solid var(--line);border-radius:2px;color:var(--muted);background:var(--surface)}
+  .ddate{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .dtitle{font-family:var(--serif);font-size:clamp(20px,2.9vw,27px);font-weight:700;
+    margin:0 0 4px;line-height:1.3;text-wrap:balance}
+  .dsrc{font-family:var(--mono);font-size:11.5px}
+  .dsrc a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
+  .dsrc a:hover,.dsrc a:focus-visible{border-bottom-color:var(--accent)}
+
+  /* ---------- deck ---------- */
+  .deck{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:18px 2px 22px;margin:0 -2px;scrollbar-width:thin}
+  .card{scroll-snap-align:start;flex:0 0 clamp(250px,74vw,300px);aspect-ratio:4/5;
+    background:var(--surface);border:1px solid var(--line);border-radius:3px;
+    box-shadow:var(--shadow);padding:22px 20px;display:flex;flex-direction:column;
+    position:relative;overflow:hidden}
+  .card::after{content:attr(data-idx);position:absolute;right:14px;bottom:11px;
+    font-family:var(--mono);font-size:10px;color:var(--muted);opacity:.6;
+    font-variant-numeric:tabular-nums}
+  .clabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:12px}
+  .ctitle{font-family:var(--serif);font-size:21px;line-height:1.32;font-weight:700;margin:0 0 12px}
+  .ctext{font-size:14.5px;line-height:1.78;margin:0;color:var(--ink)}
+  .ctext em{font-style:normal;font-weight:600;
+    box-shadow:inset 0 -.34em 0 var(--accent-soft)}
+  .ctext .def{display:block;margin-top:10px;padding-top:9px;border-top:1px dotted var(--line);
+    font-size:12.5px;color:var(--muted);line-height:1.6}
+  .cfoot{margin-top:auto;padding-top:14px;font-family:var(--mono);font-size:10.5px;
+    color:var(--muted);border-top:1px solid var(--line)}
+
+  .card.cover{background:var(--accent);border-color:var(--accent)}
+  .card.cover .clabel{color:rgba(255,255,255,.72)}
+  .card.cover .ctitle{color:#fff;font-size:24px}
+  .card.cover .ctext{color:rgba(255,255,255,.9)}
+  .card.cover .cfoot{color:rgba(255,255,255,.66);border-top-color:rgba(255,255,255,.22)}
+  .card.cover::after{color:rgba(255,255,255,.6)}
+  .card.cover .ctext em{box-shadow:inset 0 -.34em 0 rgba(255,255,255,.2);color:#fff}
+  .card.cover .num{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3)}
+
+  .card.seal{background:var(--brass-soft);border-color:var(--brass)}
+  .card.seal .clabel{color:var(--brass)}
+  .card.seal .ctext{font-family:var(--serif);font-size:16.5px;line-height:1.72}
+  .card.seal .ctext em{box-shadow:inset 0 -.34em 0 rgba(154,123,18,.22)}
+
+  .card.link{background:var(--accent-soft);border-style:dashed}
+  .card.link .clabel{color:var(--accent)}
+  .card.link .ctext{font-size:13.5px}
+
+  /* 원문 대조번호 — 읽기 흐름 밖으로 뺀다 */
+  .num{float:right;margin:2px 0 4px 10px;font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.03em;color:var(--muted);opacity:.55;
+    font-variant-numeric:tabular-nums;border:1px solid var(--line);
+    border-radius:2px;padding:1px 5px}
+
+  .foot{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--muted);max-width:70ch}
+
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="kicker"><span>DISPATCH</span><span class="dot"></span><span>메르의 블로그 · ranto28</span><span class="dot"></span><span>자동 수집 프로토타입</span></div>
+  <h1>메르 브리핑 10건</h1>
+  <p class="sub">RSS로 최신글을 감지하고 본문을 통째로 받아 카드로 재구성했습니다. 요약이 아니라 <b>재배치</b>입니다 — 메르 글은 이미 번호 매긴 사실 나열이라, 순서를 지키면 원문의 논리가 그대로 보존됩니다.</p>
+
+  <div class="stats">
+    <div class="stat"><b>10</b><span>수집한 글</span></div>
+    <div class="stat"><b>31,806</b><span>본문 글자 수</span></div>
+    <div class="stat"><b>53</b><span>원문 이미지</span></div>
+    <div class="stat"><b>7/25–7/29</b><span>발행 기간</span></div>
+    <div class="stat"><b>0</b><span>로그인 필요</span></div>
+  </div>
+
+  <div class="note" style="border-left-color:var(--accent);background:var(--accent-soft)">
+    <b>카드 한 장의 규칙.</b> 개념 하나 + 그것을 스스로 증명하는 숫자나 비유 하나. <b>앞 카드에 없던 용어는 쓰지 않는다.</b> 배경 지식이 필요한 대목은 카드 안에 점선으로 붙였습니다 — 몰라도 읽히고, 알면 더 읽히게. 오른쪽 위 회색 숫자는 원문 대조번호라 무시하셔도 됩니다.
+  </div>
+
+  <div class="note">
+    <b>선별 기준.</b> 카테고리로 거르려 했는데 실패했습니다. 메르 블로그에 <b>일상 전용 카테고리가 없습니다</b> — <span style="font-family:var(--mono);font-size:12px">건강/의학/맛집/일상/역사등</span> 하나에 다 묶여 있어요. 실제로 그 안에 「구마모토 대지진」 같은 알짜 분석이 들어있고, 반대로 「주말에 뭐먹지? 냉면이나 먹을까」가 진짜 일상글입니다. 그래서 <b>내용으로 판별</b>했고, 최근 14건 중 냉면 글 하나만 제외했습니다.
+  </div>
+</header>
+
+<!-- 1 -->
+<section class="dispatch">
+  <div class="dhead">
+    <span class="dnum">01</span>
+    <span class="chip">건강/의학/역사</span>
+    <span class="ddate">2026.07.29</span>
+  </div>
+  <h2 class="dtitle">7월 28일, 구마모토 대지진의 특이한 정체, 더 큰 지진이 올 수 있나?</h2>
+  <p class="dsrc"><a href="https://blog.naver.com/ranto28/224361223087">원문 보기 →</a></p>
+  <div class="deck">
+    <article class="card cover" data-idx="1/6">
+      <div class="clabel">표지</div>
+      <h3 class="ctitle">규모 7.1, 진도 7<br>구마모토가 흔들렸다</h3>
+      <p class="ctext">그런데 이번 건 <em>섭입대 지진이 아니다</em>. 그래서 더 위험하다.</p>
+      <div class="cfoot">지진 · 반도체 공급망</div>
+    </article>
+    <article class="card" data-idx="2/6">
+      <div class="clabel">규모 vs 진도</div>
+      <p class="ctext"><span class="num">03–08</span>규모는 전구의 와트, 진도는 눈부심이다. 100W 전구는 어디 있든 100W지만, 눈앞이면 눈부시고 멀면 희미하다.<br><br>규모는 <em>지구상 단 하나의 값</em>, 진도는 <em>지역마다 다른 값</em>.</p>
+      <div class="cfoot">메르의 비유</div>
+    </article>
+    <article class="card" data-idx="3/6">
+      <div class="clabel">이번 지진의 정체</div>
+      <p class="ctext"><span class="num">25–29</span>큰 지진은 보통 <em>바다에서 판끼리 부딪치는 곳</em>에서 난다. 이번은 아니다.<br><br>규슈 <em>육지 한복판의 금(단층)</em>이 갈라졌다. 필리핀해판이 연 4~6cm씩 밀어온 힘이 수백 년 쌓이다, 풍선 터지듯 단층이 수 m를 미끄러진 것.<span class="def">그래서 진원이 10km로 얕았고, 같은 규모라도 지상 피해가 훨씬 컸다.</span></p>
+      <div class="cfoot">육지형 · 히나구 단층대</div>
+    </article>
+    <article class="card" data-idx="4/6">
+      <div class="clabel">끝이 아닐 수 있다</div>
+      <p class="ctext"><span class="num">30–38</span>10년 전(2016) 진앙에서 남쪽 20km. 그때는 북쪽 구간, 이번엔 남쪽 구간이 터졌다.<br><br>2016년엔 첫 강진을 본진으로 봤다가 <em>이틀 뒤 더 큰 본진</em>이 왔다. 이미 규모 6.1 포함 수십 차례 여진.</p>
+      <div class="cfoot">전문가: 한 달간 경계</div>
+    </article>
+    <article class="card" data-idx="5/6">
+      <div class="clabel">왜 시장이 봐야 하나</div>
+      <p class="ctext"><span class="num">40–42</span>구마모토는 <em>일본 반도체의 중심지</em>다.<br><br>TSMC 일본법인 JASM, 소니(이미지센서 글로벌 1위), 후지필름(반도체 소재).<br><br>전 직원 대피·시설 점검 중. 정상 가동까지 시간이 필요할 전망.</p>
+      <div class="cfoot">공급망 리스크</div>
+    </article>
+    <article class="card seal" data-idx="6/6">
+      <div class="clabel">메르의 한 줄</div>
+      <p class="ctext">“일본 규슈 여행은 9월까지는 조심하는 게 좋을 것 같음. 일본 지진보다 한국 국장이 더 위험할지도”</p>
+      <div class="cfoot">원문 인용</div>
+    </article>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="dispatch">
+  <div class="dhead">
+    <span class="dnum">02</span>
+    <span class="chip">국제정세</span>
+    <span class="ddate">2026.07.29</span>
+  </div>
+  <h2 class="dtitle">우크라이나는 왜 스스로 무너지는가?</h2>
+  <p class="dsrc"><a href="https://blog.naver.com/ranto28/224360508559">원문 보기 →</a></p>
+  <div class="deck">
+    <article class="card cover" data-idx="1/6">
+      <div class="clabel">표지</div>
+      <h3 class="ctitle">전쟁 중에<br>국방장관과 총사령관을<br>동시에 잘랐다</h3>
+      <p class="ctext">기사는 <em>드론 35세 vs 보병 60세</em> 대결로 쓴다. 진실은 더 복잡한 곳에 있다.</p>
+      <div class="cfoot">우크라이나 · 권력구조</div>
+    </article>
+    <article class="card" data-idx="2/6">
+      <div class="clabel">설계 결함</div>
+      <p class="ctext"><span class="num">07–13</span>2014년 나토식 문민통제를 도입하며 조직도는 <em>장관 &gt; 총사령관</em>으로 바꿨다. 그런데 보고체계는 안 바꿨다.<br><br>둘 다 대통령에게 직보. 평가도 대통령이 한다면 — 장관은 상사가 아니라 <em>경쟁자</em>가 된다.</p>
+      <div class="cfoot">메르의 회사 비유</div>
+    </article>
+    <article class="card" data-idx="3/6">
+      <div class="clabel">버팀목이 빠졌다</div>
+      <p class="ctext"><span class="num">19–27</span>이 구조가 굴러간 건 예르막 비서실장의 <em>개인기</em> 덕이었다.<br><br>2025년 11월 부패 스캔들로 사퇴. 후임이 못 메우자 대통령실 코어 지지의원이 <em>250명 → 130명</em>으로 붕괴(과반 226).</p>
+      <div class="cfoot">시스템이 아니라 사람</div>
+    </article>
+    <article class="card" data-idx="4/6">
+      <div class="clabel">개혁이 건드린 것</div>
+      <p class="ctext"><span class="num">36–38</span>신임 장관 페도로우는 법대로 움직였다. 자체 감사로 <em>67억 달러 과다지출</em> 적발, 군수 조달을 공개입찰로 전환.<br><br>155mm 포탄 가격이 <em>16% 하락</em>. 누군가 비공식으로 가져가던 마진 16%가 사라졌다는 뜻.</p>
+      <div class="cfoot">기득권과의 충돌</div>
+    </article>
+    <article class="card" data-idx="5/6">
+      <div class="clabel">해임의 진짜 기준</div>
+      <p class="ctext"><span class="num">54–59</span>시르스키는 정치적 야심이 없는 군인. 페도로우는 <em>젤렌스키보다 인기가 높았다</em>.<br><br>2024년에도 지지율이 앞선 잘루즈니 총사령관을 잘라낸 전례가 있다.<br><br>“제도가 작동하는 나라에서 유능한 장관은 자산, 아닌 나라에서는 위협이다.”</p>
+      <div class="cfoot">핵심 문장</div>
+    </article>
+    <article class="card seal" data-idx="6/6">
+      <div class="clabel">메르의 한 줄</div>
+      <p class="ctext">“전쟁 수행 중에 국방장관과 총사령관을 동시에 해임하는 것은 정상적인 일이 아님. … 국가보다 개인의 이해를 우선시하는 정치인은 좋은 결말을 낼 수 없음.”</p>
+      <div class="cfoot">원문 인용</div>
+    </article>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="dispatch">
+  <div class="dhead">
+    <span class="dnum">03</span>
+    <span class="chip">피드메이커(경제)</span>
+    <span class="ddate">2026.07.28</span>
+  </div>
+  <h2 class="dtitle">오늘 우리 국장은? (feat 엔비디아와 오픈AI간 순환금융 이슈)</h2>
+  <p class="dsrc"><a href="https://blog.naver.com/ranto28/224359986701">원문 보기 →</a></p>
+  <div class="deck">
+    <article class="card cover" data-idx="1/7">
+      <div class="clabel">표지</div>
+      <h3 class="ctitle">닷컴버블 광케이블과<br>지금의 GPU는<br>무엇이 같고 다른가</h3>
+      <p class="ctext">엔비디아가 오픈AI에 <em>2,500억 달러 보증</em>을 논의 중이다.</p>
+      <div class="cfoot">AI 인프라 · 순환금융</div>
+    </article>
+    <article class="card" data-idx="2/7">
+      <div class="clabel">전례 1999</div>
+      <p class="ctext"><span class="num">06–08</span>광케이블을 깔 신생 통신사엔 현금이 없었다. 루슨트·노텔·시스코가 <em>“내 장비를 사라, 돈은 내가 대주겠다”</em>며 빌려줬다.<br><br>2000년 한 해에만 이런 대출이 <em>300억 달러</em>.</p>
+      <div class="cfoot">벤더 파이낸싱</div>
+    </article>
+    <article class="card" data-idx="3/7">
+      <div class="clabel">버블을 터뜨린 것</div>
+      <p class="ctext"><span class="num">09–15</span>수요가 아니라 <em>효율 기술</em>이 터뜨렸다. 데이터 압축과 DWDM이 확산되자 이미 깔린 케이블만으로 충분해졌다.<br><br>나스닥 −78%, 통신주 시총 2조 달러 증발. 깔린 케이블의 <em>95%가 한 번도 불이 들어오지 않았다</em>.</p>
+      <div class="cfoot">기억할 지점</div>
+    </article>
+    <article class="card" data-idx="4/7">
+      <div class="clabel">돈이 제자리로 돌아온다</div>
+      <p class="ctext">엔비디아가 오픈AI에 돈을 대준다 → 오픈AI가 오라클에 클라우드 값을 낸다 → 오라클이 그 돈으로 <em>엔비디아 칩을 산다</em>.<br><br>같은 돈이 한 바퀴 돌았을 뿐인데 <em>세 회사 모두 매출이 잡힌다</em>.<span class="def">비판자들이 “무한 돈복사”라 부르는 이유. 엔비디아 관련 투자·보증만 5,400억 달러를 넘는다.</span></p>
+      <div class="cfoot">1999년 통신장비사가 하던 그것</div>
+    </article>
+    <article class="card" data-idx="5/7">
+      <div class="clabel">왜 대출이 아니라 보증인가</div>
+      <p class="ctext"><span class="num">26–33</span>오픈AI는 적자 비상장사라 <em>신용등급이 투자부적격</em>. 임차인 신용이 없으면 데이터센터 대출이 안 나온다.<br><br>보증이면 엔비디아 신용으로 저금리 조달이 되고, 결정적으로 <em>재무제표에 부채로 안 잡힌다</em>.</p>
+      <div class="cfoot">회계의 묘</div>
+    </article>
+    <article class="card" data-idx="6/7">
+      <div class="clabel">가장 약한 고리</div>
+      <p class="ctext"><span class="num">38–44</span>오픈AI는 <em>1달러 벌 때 1.22달러를 쓴다</em>. HSBC는 2030년까지 최소 2,070억 달러 추가 조달이 필요하다고 본다.<br><br>매출 250억 달러 회사가 매년 800억~1,000억 달러 컴퓨팅 약정을 감당해야 한다.</p>
+      <div class="cfoot">도미노 위험</div>
+    </article>
+    <article class="card seal" data-idx="7/7">
+      <div class="clabel">메르의 한 줄 — 세 개의 질문</div>
+      <p class="ctext">① AI가 인프라 투자를 정당화할 만큼 벌 수 있나 <span style="color:var(--muted)">— 대체로 긍정</span><br>② 그때까지 오픈AI가 조달을 계속할 수 있나 <span style="color:var(--muted)">— 시장이 갸우뚱</span><br>③ GPU를 덜 깔아도 되는 효율혁신이 나올까 <span style="color:var(--muted)">— 아직 머릿속에서만</span></p>
+      <div class="cfoot">원문 요지</div>
+    </article>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="dispatch">
+  <div class="dhead">
+    <span class="dnum">04–05</span>
+    <span class="chip">국제정세 · 2부작</span>
+    <span class="ddate">2026.07.27–28</span>
+  </div>
+  <h2 class="dtitle">오늘 상장하는 중국 CXMT(창신메모리)는 어떤 기업인가? 1·2</h2>
+  <p class="dsrc"><a href="https://blog.naver.com/ranto28/224358943114">1편 →</a> &nbsp;·&nbsp; <a href="https://blog.naver.com/ranto28/224358951791">2편 →</a></p>
+  <div class="deck">
+    <article class="card cover" data-idx="1/8">
+      <div class="clabel">표지 · 2부작 통합</div>
+      <h3 class="ctitle">파산한 독일 D램 회사의<br>특허 7천 건이<br>중국 메모리를 만들었다</h3>
+      <p class="ctext">상장 첫날 <em>472% 폭등</em>. 삼성·하이닉스에 무엇을 의미하나.</p>
+      <div class="cfoot">CXMT · 반도체</div>
+    </article>
+    <article class="card" data-idx="2/8">
+      <div class="clabel">허페이시라는 도박사</div>
+      <p class="ctext"><span class="num">1편 08–21</span>허페이시는 2002년 BOE에 <em>22억 달러</em>를 넣었다. 당시 시 예산은 43억 달러 — <em>예산 절반을 한 회사에 풀베팅</em>.<br><br>BOE는 LCD 세계 1위가 됐다. 그 성공 모델로 2016년 CXMT에 다시 베팅.</p>
+      <div class="cfoot">지방정부 벤처투자</div>
+    </article>
+    <article class="card" data-idx="3/8">
+      <div class="clabel">하이디스의 전례</div>
+      <p class="ctext"><span class="num">1편 10–18</span>2002년 BOE가 현대전자에서 분사한 하이디스를 3.8억 달러에 인수. 라인과 연구원을 중국으로 옮기고 공장이 완공되자 <em>경영권을 포기</em>했다.<br><br>하이디스는 법정관리로 갔다. 기술만 넘어갔다.</p>
+      <div class="cfoot">먹튀의 원형</div>
+    </article>
+    <article class="card" data-idx="4/8">
+      <div class="clabel">키몬다 특허 7천 건</div>
+      <p class="ctext"><span class="num">1편 31–45</span>2009년 파산한 유럽 최고 D램 업체 키몬다. CXMT는 캐나다 특허회사를 경유해 <em>비공개로 7천여 건을 사들였다</em>.<br><br>그 안에 <em>결정적인 한 건</em>이 있었다.<span class="def">D램은 전기를 담는 통(커패시터)과 그 문을 여닫는 스위치로 만든다. 스위치의 신호선을 실리콘 <b>표면에 얹지 않고 땅에 묻으면</b> 전기가 덜 새고 셀을 더 촘촘히 깔 수 있다. 키몬다가 파산 직전 양산에 성공한 이 구조가 지금 업계 표준이다.</span></p>
+      <div class="cfoot">당시엔 뭐가 보물인지 몰랐다</div>
+    </article>
+    <article class="card" data-idx="5/8">
+      <div class="clabel">사람도 함께 갔다</div>
+      <p class="ctext"><span class="num">1편 46–51 · 2편 54–59</span>키몬다 선행개발 부사장 쿠스터스(지멘스·인피니온 24년) 영입, 시안 R&amp;D센터 연구직 흡수.<br><br>삼성 인력 유출은 <em>역대 최대 기술유출</em>로 확인 — 검찰 추산 피해 수십조 원, 2026년 4월 1심에서 6~7년 선고.</p>
+      <div class="cfoot">국정원 → 검찰</div>
+    </article>
+    <article class="card" data-idx="6/8">
+      <div class="clabel">지금 어디까지 왔나</div>
+      <p class="ctext"><span class="num">2편 69–77</span>DDR4 생산능력 월 4만 장(2020) → <em>30만 장(2025)</em>. 2026년 5월 24Gb DDR5 양산 성공 — 최첨단 32Gb 대비 한 세대 뒤.<br><br>D램 점유율 4.1% → <em>7.7%</em>(4위). HBM은 아직 HBM2급으로 <em>2세대 뒤진다</em>.</p>
+      <div class="cfoot">삼성 38.6 · 하이닉스 28.8</div>
+    </article>
+    <article class="card" data-idx="7/8">
+      <div class="clabel">왜 지금 상장인가</div>
+      <p class="ctext"><span class="num">2편 78–92</span>10년 누적결손 54억 달러 → 2026년 1분기 매출 73억·순이익 35억 달러(<em>전년비 +719%</em>). 적자 청산 타이밍에 상장.<br><br>조달 85.5억 달러, 기관 청약배수 <em>462배</em>.<br><br>진짜 위험은 미 상무부 <em>엔티티 리스트</em> 추가 움직임.</p>
+      <div class="cfoot">중국 반도체 사상 최대 IPO</div>
+    </article>
+    <article class="card seal" data-idx="8/8">
+      <div class="clabel">메르의 한 줄</div>
+      <p class="ctext">“기술격차가 꽤 벌어져 있고, 미국정부의 추가규제 가능성이 남아있음. 애플이 CXMT의 규제를 풀기 위해 로비하고 있는 것이 변수임. <em>애플 밉상임.</em>”</p>
+      <div class="cfoot">원문 인용</div>
+    </article>
+  </div>
+</section>
+
+<!-- 6+7 -->
+<section class="dispatch">
+  <div class="dhead">
+    <span class="dnum">06–07</span>
+    <span class="chip">주절주절 · 경제</span>
+    <span class="ddate">2026.07.27</span>
+  </div>
+  <h2 class="dtitle">단일종목 2배 레버리지 — 원금은 어떻게 녹고, 규제는 왜 풀렸나</h2>
+  <p class="dsrc"><a href="https://blog.naver.com/ranto28/224358372928">원금 편 →</a> &nbsp;·&nbsp; <a href="https://blog.naver.com/ranto28/224358879817">승인 비밀 A/S →</a></p>
+  <div class="deck">
+    <article class="card cover" data-idx="1/8">
+      <div class="clabel">표지 · 2편 통합</div>
+      <h3 class="ctitle">SK하이닉스 2배는<br>1년에 원금의 33%가<br>녹는 구조다</h3>
+      <p class="ctext">기초자산이 <em>제자리로 돌아와도</em> 손실이 남는다.</p>
+      <div class="cfoot">레버리지 ETF</div>
+    </article>
+    <article class="card" data-idx="2/8">
+      <div class="clabel">기본 비용</div>
+      <p class="ctext"><span class="num">원금편</span>추가 노출 비용 ≈ (기준금리 − 배당수익률) + 수급 프리미엄 + 운용보수.<br><br>삼성 2배 ≈ <em>연 2%</em><br>하이닉스 2배 ≈ <em>연 3.5%</em><br><br>여기까지는 시작일 뿐이다.</p>
+      <div class="cfoot">기준금리 2.75%</div>
+    </article>
+    <article class="card" data-idx="3/8">
+      <div class="clabel">변동성 끌림의 정체</div>
+      <p class="ctext">기초자산 100 → 90 → 100 이면 손익 0.<br><br>2배는 100 → 80 → 80×1.222 = <em>97.78</em>.<br><br>내려갈 때와 올라올 때의 비대칭이 2배로 증폭된다. 흔들림이 10%→20%로 커지면 손실은 2.2%→<em>10%</em>로 뛴다.</p>
+      <div class="cfoot">일일 재조정의 대가</div>
+    </article>
+    <article class="card" data-idx="4/8">
+      <div class="clabel">암산 공식</div>
+      <p class="ctext">연간 감쇠 ≈ <em>연율화 변동성의 제곱</em><br><br>코스피200 (15%) → 0.15² = <em>2.25%</em><br>삼성전자 (35%) → 0.35² = <em>12%</em><br>SK하이닉스 (55%) → 0.55² = <em>30%</em></p>
+      <div class="cfoot">이 한 줄만 기억해도 된다</div>
+    </article>
+    <article class="card" data-idx="5/8">
+      <div class="clabel">총비용</div>
+      <p class="ctext">삼성 2배 ≈ 2% + 12% = <em>연 14%</em><br>하이닉스 2배 ≈ 3.5% + 30% = <em>연 33%</em><br><br>하이닉스처럼 ±10%가 수시로 나는 종목은 그 변동을 다섯 번만 겪어도 <em>열흘 남짓에 원금 10%</em>가 사라진다.</p>
+      <div class="cfoot">단, 일방 상승장에선 반대</div>
+    </article>
+    <article class="card" data-idx="6/8">
+      <div class="clabel">규제는 왜 풀렸나</div>
+      <p class="ctext"><span class="num">A/S편</span>홍콩 CSOP의 삼성 2X·하이닉스 2X가 대박(상장 후 <em>하이닉스 +1,305%</em>). 당국은 “홍콩에 나간 한국 돈을 불러오면 환율이 잡힌다”고 판단, 4월 시행령을 개정했다.</p>
+      <div class="cfoot">2026.04.28 시행령</div>
+    </article>
+    <article class="card" data-idx="7/8">
+      <div class="clabel">데이터를 잘못 읽었다</div>
+      <p class="ctext"><span class="num">A/S편</span>예탁결제원 집계로 홍콩 상품의 <em>한국 자금은 3.2억 달러뿐</em>이었다. 나머지는 홍콩·본토·미국·유럽 자금 — 한국으로 올 이유가 없다.<br><br>실제 환류 5천억 원. 대신 <em>국내 주식을 판 돈</em>이 14조 원 갈아탔다.</p>
+      <div class="cfoot">금감원장: “반성하고 후회한다”</div>
+    </article>
+    <article class="card seal" data-idx="8/8">
+      <div class="clabel">메르의 한 줄</div>
+      <p class="ctext">“장사의 기본은 원가를 아는 것이다. … 단일종목 레버리지 ETF는 <em>장기 보유보다는 단기 매매에 적합한 상품</em>이라는 점을 기억할 필요가 있다.”</p>
+      <div class="cfoot">원문 인용</div>
+    </article>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="dispatch">
+  <div class="dhead">
+    <span class="dnum">08</span>
+    <span class="chip">산업 · 스타트업</span>
+    <span class="ddate">2026.07.26</span>
+  </div>
+  <h2 class="dtitle">스타트업 성장 이야기 (feat 리센느)</h2>
+  <p class="dsrc"><a href="https://blog.naver.com/ranto28/224358106699">원문 보기 →</a></p>
+  <div class="deck">
+    <article class="card cover" data-idx="1/5">
+      <div class="clabel">표지</div>
+      <h3 class="ctitle">자본금 천만 원<br>제주도 주소의 기획사가<br>역주행을 만났을 때</h3>
+      <p class="ctext">투자 라운드로 읽는 <em>K팝 기획사 손익계산서</em>.</p>
+      <div class="cfoot">더뮤즈 · RESCENE</div>
+    </article>
+    <article class="card" data-idx="2/5">
+      <div class="clabel">라운드의 문법</div>
+      <p class="ctext"><span class="num">05–14</span>시드 → 프리A → 시리즈A. 프리A는 <em>“시장에 먹히나”를 테스트</em>하는 돈(수억~10억).<br><br>더뮤즈는 프리A로 10억 안쪽을 받아 사옥을 빌리고 5인조를 육성했다.</p>
+      <div class="cfoot">2023.05</div>
+    </article>
+    <article class="card" data-idx="3/5">
+      <div class="clabel">숫자가 안 나왔다</div>
+      <p class="ctext"><span class="num">17–19, 25–26</span>싱글 2장·미니 3장을 냈지만 <em>의미 있는 결과가 나온 앨범이 하나도 없었다</em>.<br><br>2025년 매출 17.7억 · 영업손실 <em>56.9억</em>. 목표 50억 시리즈A는 20억에 그쳤다.</p>
+      <div class="cfoot">전년 매출 21억 · 손실 2억</div>
+    </article>
+    <article class="card" data-idx="4/5">
+      <div class="clabel">역주행, 그리고 중단</div>
+      <p class="ctext"><span class="num">27–30</span>2026년 5월 리더 원이의 개인채널이 ‘거제 야호’로 뜨며 과거 곡까지 역주행. 광고문의 100건 이상.<br><br>더뮤즈는 <em>추가 유치를 중단</em>하고 시리즈A를 20억에 종료했다 — 기업가치를 키워 시리즈B로 가겠다는 뜻.</p>
+      <div class="cfoot">시리즈A 투자자는 대박</div>
+    </article>
+    <article class="card seal" data-idx="5/5">
+      <div class="clabel">남은 위험 · 메르의 한 줄</div>
+      <p class="ctext"><span class="num">33–45</span><em>원팀 리스크</em>와 대표 의존도. 하이브도 BTS 하나로 시작해 인수합병으로 풀었다.<br><br>“하이브를 벤치마킹하는 것은 필요한데 <em>장점만 가져와야 함.</em>”</p>
+      <div class="cfoot">원문 인용</div>
+    </article>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="dispatch">
+  <div class="dhead">
+    <span class="dnum">09</span>
+    <span class="chip">국제정세</span>
+    <span class="ddate">2026.07.26</span>
+  </div>
+  <h2 class="dtitle">파탄 난 러시아·중국 천연가스 협상의 내막</h2>
+  <p class="dsrc"><a href="https://blog.naver.com/ranto28/224357493328">원문 보기 →</a></p>
+  <div class="deck">
+    <article class="card cover" data-idx="1/6">
+      <div class="clabel">표지</div>
+      <h3 class="ctitle">원가 $125짜리 가스를<br>중국은 $50에<br>사겠다고 했다</h3>
+      <p class="ctext">그리고 <em>협상장을 나갔다</em>. 왜?</p>
+      <div class="cfoot">시베리아의 힘 2</div>
+    </article>
+    <article class="card" data-idx="2/6">
+      <div class="clabel">17세기부터의 앙금</div>
+      <p class="ctext"><span class="num">03–13</span>네르친스크 조약(청 우위)이 170년. 청이 아편전쟁·태평천국으로 무너지자 러시아가 <em>총 한 발 없이</em> 아이훈·베이징 조약으로 연해주를 가져갔다.<br><br>한반도 <em>5배 크기</em> 100만㎢. 그 항구가 블라디보스토크다.</p>
+      <div class="cfoot">“동방을 지배하라”</div>
+    </article>
+    <article class="card" data-idx="3/6">
+      <div class="clabel">막힌 동해 출구</div>
+      <p class="ctext"><span class="num">24–32</span>중국 영토에서 15km만 내려가면 동해다. 두만강을 준설하면 되는데 <em>조로우호 다리가 7m</em>라 큰 배가 못 지난다.<br><br>수십 년간 “다시 지어줄 테니 배 좀 지나가게 해달라”고 설득해 왔다.</p>
+      <div class="cfoot">1959년 건설</div>
+    </article>
+    <article class="card" data-idx="4/6">
+      <div class="clabel">기대와 배신</div>
+      <p class="ctext"><span class="num">33–41</span>2024년 푸틴·김정은이 하산-두만강 다리에 합의. 중국은 <em>조로우호 다리 철거</em>를 기대했다.<br><br>설계도가 나왔다 — <em>똑같이 낮았다</em>. 장애물이 하나 더 생긴 것이다.</p>
+      <div class="cfoot">2026.04 준공</div>
+    </article>
+    <article class="card" data-idx="5/6">
+      <div class="clabel">그리고 $50</div>
+      <p class="ctext"><span class="num">56–71</span>러시아 제시 $250 — 중국이 현재 내는 $259, 카타르 LNG $370, 러시아의 타 고객 $420에 비해 <em>합리적</em>이었다.<br><br>중국의 답: <em>$50. “가격 협상은 더 이상 없다.”</em><br><br>EU 수출은 150bcm → 25bcm 미만으로 붕괴한 상태.</p>
+      <div class="cfoot">“뜨거운 양철 지붕 위의 고양이”</div>
+    </article>
+    <article class="card seal" data-idx="6/6">
+      <div class="clabel">메르의 한 줄</div>
+      <p class="ctext">“원가가 $125인데, $50에 사겠다는 것은 정상적인 태도는 아님. 뭔가 다른 이유가 있을 것 같음. <em>하산-두만강 다리 건설에 삐졌나?</em>”</p>
+      <div class="cfoot">원문 인용</div>
+    </article>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="dispatch">
+  <div class="dhead">
+    <span class="dnum">10</span>
+    <span class="chip">피드메이커(경제)</span>
+    <span class="ddate">2026.07.25</span>
+  </div>
+  <h2 class="dtitle">미국 국채금리 폭등이 정말 유가 때문일까?</h2>
+  <p class="dsrc"><a href="https://blog.naver.com/ranto28/224356110315">원문 보기 →</a></p>
+  <div class="deck">
+    <article class="card cover" data-idx="1/7">
+      <div class="clabel">표지</div>
+      <h3 class="ctitle">유가 탓이 맞다.<br>다만 그것만으로는<br>설명이 안 된다</h3>
+      <p class="ctext">10년물이 장중 <em>4.7%</em>를 넘겼다.</p>
+      <div class="cfoot">미국 국채 · 재정</div>
+    </article>
+    <article class="card" data-idx="2/7">
+      <div class="clabel">숫자가 배신한다</div>
+      <p class="ctext">유가가 범인이라면 <em>“물가 걱정” 지표만 튀어야</em> 한다. 기름값이 오르면 지갑이 얇아져 성장은 오히려 꺾이니까.<br><br>실제로는 반대다. 유가가 한 달에 30~40% 올랐는데 물가 기대치는 <em>2.3%로 잠잠</em>하고, <em>돈값 자체가 2008년 이후 최고</em>(30년 실질금리 2.987%)로 뛰었다.<span class="def">즉 물가가 아니라 <b>“돈을 빌리는 값”</b>이 비싸진 것 — 원인이 유가 밖에 있다는 신호.</span></p>
+      <div class="cfoot">진단이 뒤집히는 지점</div>
+    </article>
+    <article class="card" data-idx="3/7">
+      <div class="clabel">공급 측면</div>
+      <p class="ctext">국채시장 4.5조(2007) → <em>31조 달러</em>. 7배를 사줘야 하는데 큰손이 빠졌다.<br><br>중국은 순매도, 일본은 1분기에 <em>296억 달러 순매도</em>, 연준은 대차대조표 축소 중.<br><br>남은 건 “싸면 산다”는 민간뿐.</p>
+      <div class="cfoot">흔싸귀비</div>
+    </article>
+    <article class="card" data-idx="4/7">
+      <div class="clabel">스스로 굴러가는 눈덩이</div>
+      <p class="ctext">금리↑ → 이자↑ → 적자↑ → 국채 발행↑ → 국채 흔해짐 → <em>금리↑</em><br><br>한 바퀴 돌 때마다 커진다. 미국 이자비용은 이미 <em>연 1.2조 달러</em>를 넘었다.<span class="def">2026년에만 만기 3.46조 달러가 돌아온다. 제로금리 때 찍은 1~2%짜리가 4~5%로 갈아타니, 적자가 0이어도 이자는 자동으로 는다.</span></p>
+      <div class="cfoot">FY2026 재정적자 2.07조 달러</div>
+    </article>
+    <article class="card" data-idx="5/7">
+      <div class="clabel">수요 측면 — 빅테크</div>
+      <p class="ctext">2026 상반기 글로벌 회사채 발행 <em>3.68조 달러</em>(사상 최대급). 아마존 540억, 메타·엔비디아·오라클·스페이스X 각 250억.<br><br>연기금·보험사가 빅테크 채권을 사면 국채를 덜 산다. 메타는 국채 대비 <em>+1.4%</em>를 질렀다.</p>
+      <div class="cfoot">재무부 vs 빅테크</div>
+    </article>
+    <article class="card link" data-idx="6/7">
+      <div class="clabel">캘린더에 넣을 것</div>
+      <p class="ctext"><b>8월 5일(수) 밤 9시 30분</b><br>미 재무부 분기 자금조달 계획.<br><br>볼 지점은 딱 하나 — <em>“at least”</em> 문구의 유지 여부. 삭제되면 2027년 증발행 신호로 읽힌다.</p>
+      <div class="cfoot">메르가 지목한 관전 포인트</div>
+    </article>
+    <article class="card seal" data-idx="7/7">
+      <div class="clabel">메르의 한 줄</div>
+      <p class="ctext">“최근 국채금리 상승에 유가가 영향을 미친 것은 맞다. 하지만 <em>국채공급 확대, 빅테크 회사채 발행 급증</em>도 영향을 주고 있다. … 변수는 트럼프다.”</p>
+      <div class="cfoot">원문 인용</div>
+    </article>
+  </div>
+</section>
+
+<p class="foot">
+  개인 열람용 프로토타입입니다. 각 편의 원문 링크를 함께 싣고, 「메르의 한 줄」은 원문을 그대로 인용했습니다.
+  본문 요약과 카드 구성은 자동 수집·재구성한 것으로 원문 저작권은 <b>메르(ranto28)</b>에게 있습니다.
+  수집 방식: RSS 폴링으로 신규 글 감지 → 본문·이미지 추출 → 카드 재구성. 로그인·크롤링 우회 없음.
+</p>
+
+</div>
+
+<div style="max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 70px;
+     font-size:12.5px;color:#5C6B6B;line-height:1.7">
+<b>출처 : 메르의 블로그</b> &mdash;
+<a href="https://blog.naver.com/ranto28" style="color:#1F5C63;font-weight:600">blog.naver.com/ranto28</a><br>
+「메르의 한 줄」은 원문을 그대로 인용했습니다. 정리와 카드 구성은 원문을 바탕으로 재구성한 것이며,
+저작권은 메르에게 있습니다.
+</div>
+</body></html>
