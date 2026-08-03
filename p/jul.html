@@ -8,127 +8,15 @@
 <a href="../index.html" style="font-family:ui-monospace,Consolas,monospace;font-size:12px;
    color:#1F5C63;text-decoration:none">&larr; 메르 브리핑</a>
 </div>
-<title>메르 브리핑 — 카드뉴스 프로토타입</title>
-<style>
-  :root{
-    --paper:#EEF2F1; --surface:#FFFFFF; --line:#D3DEDC; --ink:#101617;
-    --muted:#5C6B6B; --accent:#1F5C63; --accent-soft:#E2ECEA; --brass:#9A7B12;
-    --brass-soft:#F5EEDA; --shadow:0 1px 2px rgba(16,22,23,.06),0 8px 24px rgba(16,22,23,.07);
-    --serif:"Nanum Myeongjo","NanumMyeongjo",Batang,"Times New Roman",serif;
-    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
-    --mono:ui-monospace,SFMono-Regular,Consolas,"D2Coding",monospace;
-  }
-  @media (prefers-color-scheme:dark){
-    :root{--paper:#0C1112;--surface:#151D1E;--line:#263334;--ink:#E6EDEC;
-      --muted:#93A5A4;--accent:#5FAFA4;--accent-soft:#17292A;--brass:#D9BE5F;
-      --brass-soft:#241F0F;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}
-  }
-  :root[data-theme="dark"]{--paper:#0C1112;--surface:#151D1E;--line:#263334;--ink:#E6EDEC;
-    --muted:#93A5A4;--accent:#5FAFA4;--accent-soft:#17292A;--brass:#D9BE5F;
-    --brass-soft:#241F0F;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}
-  :root[data-theme="light"]{--paper:#EEF2F1;--surface:#FFFFFF;--line:#D3DEDC;--ink:#101617;
-    --muted:#5C6B6B;--accent:#1F5C63;--accent-soft:#E2ECEA;--brass:#9A7B12;
-    --brass-soft:#F5EEDA;--shadow:0 1px 2px rgba(16,22,23,.06),0 8px 24px rgba(16,22,23,.07);}
-
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
-    line-height:1.65;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1180px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(16px,4vw,40px) 80px}
-
-  /* ---------- masthead ---------- */
-  .mast{display:flex;flex-direction:column;gap:18px;padding-bottom:26px;
-    border-bottom:2px solid var(--ink)}
-  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--accent);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .kicker .dot{width:5px;height:5px;border-radius:50%;background:var(--brass);display:inline-block}
-  h1{font-family:var(--serif);font-weight:700;font-size:clamp(30px,5.4vw,52px);
-    line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
-  .sub{color:var(--muted);max-width:62ch;margin:0;font-size:15.5px}
-
-  .stats{display:flex;flex-wrap:wrap;gap:0;margin-top:8px;border:1px solid var(--line);
-    border-radius:2px;background:var(--surface);overflow:hidden}
-  .stat{flex:1 1 130px;padding:13px 16px;border-right:1px solid var(--line)}
-  .stat:last-child{border-right:0}
-  .stat b{display:block;font-family:var(--mono);font-size:20px;font-variant-numeric:tabular-nums;
-    color:var(--accent);letter-spacing:-.02em}
-  .stat span{font-size:11.5px;color:var(--muted);letter-spacing:.04em}
-
-  .note{margin-top:22px;padding:14px 16px;border-left:3px solid var(--brass);
-    background:var(--brass-soft);font-size:13.5px;color:var(--ink);border-radius:0 2px 2px 0}
-  .note b{font-weight:700}
-
-  /* ---------- dispatch ---------- */
-  .dispatch{margin-top:clamp(38px,6vw,64px)}
-  .dhead{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
-  .dnum{font-family:var(--mono);font-size:12px;color:var(--brass);letter-spacing:.1em;
-    font-variant-numeric:tabular-nums}
-  .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:3px 8px;
-    border:1px solid var(--line);border-radius:2px;color:var(--muted);background:var(--surface)}
-  .ddate{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
-  .dtitle{font-family:var(--serif);font-size:clamp(20px,2.9vw,27px);font-weight:700;
-    margin:0 0 4px;line-height:1.3;text-wrap:balance}
-  .dsrc{font-family:var(--mono);font-size:11.5px}
-  .dsrc a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
-  .dsrc a:hover,.dsrc a:focus-visible{border-bottom-color:var(--accent)}
-
-  /* ---------- deck ---------- */
-  .deck{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
-    padding:18px 2px 22px;margin:0 -2px;scrollbar-width:thin}
-  .card{scroll-snap-align:start;flex:0 0 clamp(250px,74vw,300px);aspect-ratio:4/5;
-    background:var(--surface);border:1px solid var(--line);border-radius:3px;
-    box-shadow:var(--shadow);padding:22px 20px;display:flex;flex-direction:column;
-    position:relative;overflow:hidden}
-  .card::after{content:attr(data-idx);position:absolute;right:14px;bottom:11px;
-    font-family:var(--mono);font-size:10px;color:var(--muted);opacity:.6;
-    font-variant-numeric:tabular-nums}
-  .clabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--accent);margin-bottom:12px}
-  .ctitle{font-family:var(--serif);font-size:21px;line-height:1.32;font-weight:700;margin:0 0 12px}
-  .ctext{font-size:14.5px;line-height:1.78;margin:0;color:var(--ink)}
-  .ctext em{font-style:normal;font-weight:600;
-    box-shadow:inset 0 -.34em 0 var(--accent-soft)}
-  .ctext .def{display:block;margin-top:10px;padding-top:9px;border-top:1px dotted var(--line);
-    font-size:12.5px;color:var(--muted);line-height:1.6}
-  .cfoot{margin-top:auto;padding-top:14px;font-family:var(--mono);font-size:10.5px;
-    color:var(--muted);border-top:1px solid var(--line)}
-
-  .card.cover{background:var(--accent);border-color:var(--accent)}
-  .card.cover .clabel{color:rgba(255,255,255,.72)}
-  .card.cover .ctitle{color:#fff;font-size:24px}
-  .card.cover .ctext{color:rgba(255,255,255,.9)}
-  .card.cover .cfoot{color:rgba(255,255,255,.66);border-top-color:rgba(255,255,255,.22)}
-  .card.cover::after{color:rgba(255,255,255,.6)}
-  .card.cover .ctext em{box-shadow:inset 0 -.34em 0 rgba(255,255,255,.2);color:#fff}
-  .card.cover .num{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3)}
-
-  .card.seal{background:var(--brass-soft);border-color:var(--brass)}
-  .card.seal .clabel{color:var(--brass)}
-  .card.seal .ctext{font-family:var(--serif);font-size:16.5px;line-height:1.72}
-  .card.seal .ctext em{box-shadow:inset 0 -.34em 0 rgba(154,123,18,.22)}
-
-  .card.link{background:var(--accent-soft);border-style:dashed}
-  .card.link .clabel{color:var(--accent)}
-  .card.link .ctext{font-size:13.5px}
-
-  /* 원문 대조번호 — 읽기 흐름 밖으로 뺀다 */
-  .num{float:right;margin:2px 0 4px 10px;font-family:var(--mono);font-size:9.5px;
-    letter-spacing:.03em;color:var(--muted);opacity:.55;
-    font-variant-numeric:tabular-nums;border:1px solid var(--line);
-    border-radius:2px;padding:1px 5px}
-
-  .foot{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);
-    font-size:12.5px;color:var(--muted);max-width:70ch}
-
-  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-</style>
+<title>메르 브리핑 — 7월 마지막 주</title>
+<link rel="stylesheet" href="../assets/mer.css">
 
 <div class="wrap">
 
 <header class="mast">
-  <div class="kicker"><span>DISPATCH</span><span class="dot"></span><span>메르의 블로그 · ranto28</span><span class="dot"></span><span>자동 수집 프로토타입</span></div>
+  <div class="kicker"><span>DISPATCH</span><span class="dot"></span><span>메르의 블로그 · ranto28</span><span class="dot"></span><span>2026.07.25–29</span></div>
   <h1>메르 브리핑 10건</h1>
-  <p class="sub">RSS로 최신글을 감지하고 본문을 통째로 받아 카드로 재구성했습니다. 요약이 아니라 <b>재배치</b>입니다 — 메르 글은 이미 번호 매긴 사실 나열이라, 순서를 지키면 원문의 논리가 그대로 보존됩니다.</p>
+  <p class="sub">RSS로 최신글을 감지하고 본문을 통째로 받아 카드로 재구성했습니다. 요약이 아니라 재배치입니다 — 메르 글은 이미 번호 매긴 사실 나열이라, 순서를 지키면 원문의 논리가 그대로 보존됩니다.</p>
 
   <div class="stats">
     <div class="stat"><b>10</b><span>수집한 글</span></div>
@@ -139,16 +27,14 @@
   </div>
 
   <div class="note" style="border-left-color:var(--accent);background:var(--accent-soft)">
-    <b>카드 한 장의 규칙.</b> 개념 하나 + 그것을 스스로 증명하는 숫자나 비유 하나. <b>앞 카드에 없던 용어는 쓰지 않는다.</b> 배경 지식이 필요한 대목은 카드 안에 점선으로 붙였습니다 — 몰라도 읽히고, 알면 더 읽히게. 오른쪽 위 회색 숫자는 원문 대조번호라 무시하셔도 됩니다.
-  </div>
+    <b>카드 한 장의 규칙</b> 개념 하나 + 그것을 스스로 증명하는 숫자나 비유 하나. 앞 카드에 없던 용어는 쓰지 않습니다. 오른쪽 위 회색 숫자는 원문 대조번호입니다.</div>
 
   <div class="note">
-    <b>선별 기준.</b> 카테고리로 거르려 했는데 실패했습니다. 메르 블로그에 <b>일상 전용 카테고리가 없습니다</b> — <span style="font-family:var(--mono);font-size:12px">건강/의학/맛집/일상/역사등</span> 하나에 다 묶여 있어요. 실제로 그 안에 「구마모토 대지진」 같은 알짜 분석이 들어있고, 반대로 「주말에 뭐먹지? 냉면이나 먹을까」가 진짜 일상글입니다. 그래서 <b>내용으로 판별</b>했고, 최근 14건 중 냉면 글 하나만 제외했습니다.
-  </div>
+    <b>이 묶음에 대하여</b> 7월 25일부터 29일까지 올라온 글 중, 일상 기록을 뺀 열 편입니다. 카드는 훑기용이고, 각 편의 원문 링크를 함께 실었습니다.</div>
 </header>
 
 <!-- 1 -->
-<section class="dispatch">
+<section class="dispatch" id="d1">
   <div class="dhead">
     <span class="dnum">01</span>
     <span class="chip">건강/의학/역사</span>
@@ -192,7 +78,7 @@
 </section>
 
 <!-- 2 -->
-<section class="dispatch">
+<section class="dispatch" id="d2">
   <div class="dhead">
     <span class="dnum">02</span>
     <span class="chip">국제정세</span>
@@ -236,7 +122,7 @@
 </section>
 
 <!-- 3 -->
-<section class="dispatch">
+<section class="dispatch" id="d3">
   <div class="dhead">
     <span class="dnum">03</span>
     <span class="chip">피드메이커(경제)</span>
@@ -285,7 +171,7 @@
 </section>
 
 <!-- 4 -->
-<section class="dispatch">
+<section class="dispatch" id="d4">
   <div class="dhead">
     <span class="dnum">04–05</span>
     <span class="chip">국제정세 · 2부작</span>
@@ -339,7 +225,7 @@
 </section>
 
 <!-- 6+7 -->
-<section class="dispatch">
+<section class="dispatch" id="d5">
   <div class="dhead">
     <span class="dnum">06–07</span>
     <span class="chip">주절주절 · 경제</span>
@@ -393,7 +279,7 @@
 </section>
 
 <!-- 8 -->
-<section class="dispatch">
+<section class="dispatch" id="d6">
   <div class="dhead">
     <span class="dnum">08</span>
     <span class="chip">산업 · 스타트업</span>
@@ -432,7 +318,7 @@
 </section>
 
 <!-- 9 -->
-<section class="dispatch">
+<section class="dispatch" id="d7">
   <div class="dhead">
     <span class="dnum">09</span>
     <span class="chip">국제정세</span>
@@ -476,7 +362,7 @@
 </section>
 
 <!-- 10 -->
-<section class="dispatch">
+<section class="dispatch" id="d8">
   <div class="dhead">
     <span class="dnum">10</span>
     <span class="chip">피드메이커(경제)</span>
@@ -525,9 +411,9 @@
 </section>
 
 <p class="foot">
-  개인 열람용 프로토타입입니다. 각 편의 원문 링크를 함께 싣고, 「메르의 한 줄」은 원문을 그대로 인용했습니다.
+   각 편의 원문 링크를 함께 싣고, 「메르의 한 줄」은 원문을 그대로 인용했습니다.
   본문 요약과 카드 구성은 자동 수집·재구성한 것으로 원문 저작권은 <b>메르(ranto28)</b>에게 있습니다.
-  수집 방식: RSS 폴링으로 신규 글 감지 → 본문·이미지 추출 → 카드 재구성. 로그인·크롤링 우회 없음.
+  
 </p>
 
 </div>

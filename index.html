@@ -3,190 +3,137 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>메르 브리핑</title>
-<meta name="description" content="메르의 블로그를 카드와 서술, 두 가지로 다시 읽습니다.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+<meta name="description" content="메르의 블로그 글을 카드와 서술 두 가지로 정리합니다. 개인 사이트이며 공식이 아닙니다.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="메르 브리핑">
+<meta property="og:description" content="메르의 블로그 글을 카드와 서술 두 가지로 정리합니다. 개인 사이트이며 공식이 아닙니다.">
+<meta property="og:image" content="https://mathhwi.github.io/mer-briefing/img/n1-thumb.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128225;</text></svg>">
+<link rel="stylesheet" href="assets/mer.css">
 <style>
-  :root{
-    --paper:#EEF2F1;--surface:#fff;--line:#D3DEDC;--ink:#101617;--muted:#5C6B6B;
-    --accent:#1F5C63;--accent-soft:#E2ECEA;--brass:#9A7B12;--brass-soft:#F5EEDA;
-    --shadow:0 1px 2px rgba(16,22,23,.06),0 10px 30px rgba(16,22,23,.08);
-    --serif:"Nanum Myeongjo",Batang,"Times New Roman",serif;
-    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
-    --mono:ui-monospace,SFMono-Regular,Consolas,"D2Coding",monospace;
-  }
-  @media (prefers-color-scheme:dark){:root{
-    --paper:#0C1112;--surface:#151D1E;--line:#263334;--ink:#E6EDEC;--muted:#93A5A4;
-    --accent:#5FAFA4;--accent-soft:#17292A;--brass:#D9BE5F;--brass-soft:#241F0F;
-    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4);}}
-  *{box-sizing:border-box;word-break:keep-all;overflow-wrap:break-word}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
-    line-height:1.7;-webkit-font-smoothing:antialiased}
-  a{color:inherit}
-  .wrap{max-width:1080px;margin:0 auto;padding:clamp(30px,5vw,64px) clamp(16px,4vw,36px) 90px}
+  .lead{border-bottom:2px solid var(--ink);padding-bottom:var(--s3);margin-bottom:var(--s4)}
+  .lead h1{margin-bottom:var(--s2)}
+  .lead .who{font-size:var(--t2);color:var(--dim);max-width:34em;margin:0}
+  .lead .who a{color:var(--seal);font-weight:700;text-decoration:none;
+    border-bottom:1px solid var(--rule)}
+  .filter{display:flex;gap:6px;flex-wrap:wrap;margin-top:var(--s3)}
+  .sect{font-size:var(--t1);font-weight:800;color:var(--dim);margin:var(--s4) 0 var(--s2);
+    padding-bottom:var(--s1);border-bottom:1px solid var(--rule)}
+  .rows{display:flex;flex-direction:column}
+  .row{display:grid;grid-template-columns:78px 1fr;gap:var(--s2);
+    padding:var(--s3) 0;border-bottom:1px solid var(--rule);text-decoration:none}
+  @media (min-width:700px){ .row{grid-template-columns:104px 1fr} }
+  .row:hover .rt{color:var(--seal)}
+  .row img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:var(--wash)}
+  .rm{font-family:var(--num);font-size:11px;color:var(--dim);display:flex;
+    gap:var(--s2);flex-wrap:wrap;align-items:center}
+  .rm .n{color:var(--seal);font-weight:700}
+  .rt{font-size:var(--t4);font-weight:800;line-height:1.35;margin:6px 0;
+    letter-spacing:-.01em}
+  .rd{font-size:var(--t2);color:var(--dim);line-height:1.6;margin:0}
+  .rb{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .rb span{font-size:11px;font-family:var(--num);color:var(--dim);
+    border:1px solid var(--rule);padding:2px 7px}
+</style>
+</head><body><div class="wrap">
 
-  header{border-bottom:2px solid var(--ink);padding-bottom:26px}
-  .kick{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--accent);display:flex;gap:10px;align-items:center;margin-bottom:16px}
-  .kick i{width:5px;height:5px;border-radius:50%;background:var(--brass);display:block}
-  h1{font-family:var(--serif);font-size:clamp(34px,6vw,58px);line-height:1.1;margin:0 0 14px;
-    letter-spacing:-.02em;font-weight:700}
-  .tag{color:var(--muted);max-width:60ch;margin:0;font-size:16px}
-  .rule{margin-top:22px;display:flex;gap:0;border:1px solid var(--line);border-radius:3px;
-    overflow:hidden;background:var(--surface);flex-wrap:wrap}
-  .rule div{flex:1 1 160px;padding:13px 16px;border-right:1px solid var(--line)}
-  .rule div:last-child{border-right:0}
-  .rule b{display:block;font-family:var(--mono);font-size:12px;color:var(--accent);
-    letter-spacing:.08em;margin-bottom:3px}
-  .rule span{font-size:13px;color:var(--muted)}
-
-  h2.sec{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--muted);margin:52px 0 18px;padding-bottom:9px;border-bottom:1px solid var(--line)}
-
-  .list{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
-  .item{background:var(--surface);border:1px solid var(--line);border-radius:5px;
-    overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;
-    text-decoration:none;transition:transform .16s ease,border-color .16s ease}
-  .item:hover,.item:focus-visible{transform:translateY(-3px);border-color:var(--accent)}
-  .item img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:var(--accent-soft)}
-  .item .body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:9px;flex:1}
-  .meta{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;gap:9px;
-    align-items:center;flex-wrap:wrap}
-  .meta .n{color:var(--brass);font-weight:700}
-  .item h3{font-family:var(--serif);font-size:19px;line-height:1.35;margin:0;font-weight:700}
-  .item p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.6}
-  .badges{margin-top:auto;padding-top:12px;display:flex;gap:6px;flex-wrap:wrap}
-  .b{font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:4px 8px;border-radius:2px;
-    border:1px solid var(--line);color:var(--muted)}
-  .b.on{border-color:var(--accent);color:var(--accent)}
-
-  .soon{border:1px dashed var(--line);border-radius:5px;padding:18px;background:transparent;
-    display:flex;flex-direction:column;gap:7px;justify-content:center;min-height:180px}
-  .soon b{font-family:var(--serif);font-size:17px}
-  .soon span{font-size:13px;color:var(--muted)}
-
-  footer{margin-top:70px;padding-top:24px;border-top:1px solid var(--line);
-    font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:10px}
-  footer a{color:var(--accent);font-weight:600}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-</style></head>
-<body><div class="wrap">
-
-<header>
-  <h1>메르 브리핑</h1>
-  <p class="tag">메르의 블로그 글을 카드와 서술, 두 가지로 정리합니다.</p>
-</header>
-
-<h2 class="sec">2026년 8월</h2>
-<div class="list">
-
-  <a class="item" href="p/n1.html">
-    <img src="img/n1-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">No.01</span><span>2026.07.30</span></div>
-      <h3>국장 하락의 숨은 원인 중 하나, 중국 자금이 빠져나가고 있나?</h3>
-      <p>중국이 해외 우회 투자 통로를 막았다. 갱신까지 막힌 탓에 만기가 오는 대로 청산이 이어진다.</p>
-      <div class="badges"><span class="b on">카드 9장</span><span class="b on">서술 5분</span></div>
-    </div>
-  </a>
-
-  <a class="item" href="p/n3.html">
-    <img src="img/n3-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">No.02</span><span>2026.07.30</span></div>
-      <h3>서킷브레이커와 국민연금 근황</h3>
-      <p>28년간 6번 걸리던 장치가 올해만 9번 걸렸다. 그리고 국민연금은 9번 중 5번을 팔았다.</p>
-      <div class="badges"><span class="b on">카드 9장</span><span class="b on">서술 4분</span></div>
-    </div>
-  </a>
-
-  <a class="item" href="p/n2.html">
-    <img src="img/n2-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">No.03</span><span>2026.07.31</span></div>
-      <h3>늦게 올리는 FOMC 결과와 캐빈 워시 연준의장 기자회견 후기</h3>
-      <p>동결이지만 반대표 3명은 인상이었다. 새 의장은 앞으로 힌트를 주지 않겠다고 했다.</p>
-      <div class="badges"><span class="b on">카드 10장</span><span class="b on">서술 6분</span></div>
-    </div>
-  </a>
-
-  <a class="item" href="p/n4.html">
-    <img src="img/n4-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">No.04</span><span>2026.07.31</span></div>
-      <h3>오늘 우리 국장은? (feat PCE)</h3>
-      <p>6월 PCE가 6년 만에 떨어졌다. 연준이 왜 CPI가 아니라 PCE를 보는지 알면 달리 보인다.</p>
-      <div class="badges"><span class="b on">카드 10장</span><span class="b on">서술 5분</span></div>
-    </div>
-  </a>
-
-  <a class="item" href="p/n5.html">
-    <img src="img/n5-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">No.05</span><span>2026.08.01</span></div>
-      <h3>원화는 왜 강해지고 있을까?</h3>
-      <p>달러인덱스는 0.2% 내렸을 뿐이다. 원인은 밖이 아니라 안에 있다.</p>
-      <div class="badges"><span class="b on">카드 12장</span><span class="b on">서술 7분</span></div>
-    </div>
-  </a>
-
-  <a class="item" href="p/n6.html">
-    <img src="img/n6-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">No.06</span><span>2026.08.01</span></div>
-      <h3>BTS는 그래미상 출품을 왜 거부했을까?</h3>
-      <p>받을 가능성이 가장 높은 시점에 빠졌다. 문제는 그 상이 본상이 아니었다는 점이다.</p>
-      <div class="badges"><span class="b on">카드 9장</span><span class="b on">서술 5분</span></div>
-    </div>
-  </a>
-
-  <a class="item" href="p/n7.html">
-    <img src="img/n7-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">No.07</span><span>2026.08.02</span></div>
-      <h3>SK하이닉스 1주가 일으킨 나비효과</h3>
-      <p>국장에서는 곧바로 회복된 일이었다. 그 가격을 가져다 쓰던 곳에서 2분 만에 960계좌가 지워졌다.</p>
-      <div class="badges"><span class="b on">카드 8장</span><span class="b on">서술 4분</span></div>
-    </div>
-  </a>
-
-  <a class="item" href="p/n9.html">
-    <img src="img/n9-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">No.08</span><span>2026.08.03</span></div>
-      <h3>중국이 개발했다는 DUV(노광기)의 정체는?</h3>
-      <p>ASML이 하루 5.7% 빠졌다. 그런데 양산한다는 장비는 ASML의 2008년 모델이다.</p>
-      <div class="badges"><span class="b on">카드 9장</span><span class="b on">서술 7분</span></div>
-    </div>
-  </a>
-
-  <a class="item" href="p/n10.html">
-    <img src="img/n10-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">No.09</span><span>2026.08.03</span></div>
-      <h3>미국과 일본이 엔화환율에 공동으로 개입했나? 미국국채는 어쩔?</h3>
-      <p>2011년 이후 첫 공동개입. 관건은 개입이 아니라 달러를 어디서 구하느냐였다.</p>
-      <div class="badges"><span class="b on">카드 8장</span><span class="b on">서술 5분</span></div>
-    </div>
-  </a>
-
+<div class="lead">
+<h1>메르 브리핑</h1>
+<p class="who">메르의 블로그 글을 <b>카드</b>와 <b>서술</b> 두 가지로 정리합니다.
+카드는 훑기용, 서술은 원문보다 자세히 풀어 쓴 쪽입니다.
+메르 님의 허락을 받아 운영하며, <a href="https://blog.naver.com/ranto28">원문은 여기</a> 있습니다.</p>
+<div class="filter"><a class="tag" href="t/중국.html">중국 2</a><a class="tag" href="t/반도체.html">반도체 2</a><a class="tag" href="t/연준.html">연준 2</a><a class="tag" href="t/금리.html">금리 2</a><a class="tag" href="t/시장구조.html">시장구조 2</a><a class="tag" href="t/환율.html">환율 2</a><a class="tag" href="t/수급.html">수급 1</a><a class="tag" href="t/국장.html">국장 1</a><a class="tag" href="t/연금.html">연금 1</a><a class="tag" href="t/물가.html">물가 1</a><a class="tag" href="t/K팝.html">K팝 1</a><a class="tag" href="t/산업.html">산업 1</a><a class="tag" href="t/파생.html">파생 1</a><a class="tag" href="t/미국국채.html">미국국채 1</a></div>
+</div>
+<div class="sect">2026년 8월 · 5편</div><div class="rows">
+<a class="row" href="p/n10.html">
+  <img src="img/n10-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div>
+    <div class="rm"><span class="n">No.09</span><span>2026.08.03</span></div>
+    <div class="rt">미국과 일본이 엔화환율에 공동으로 개입했나? 미국국채는 어쩔?</div>
+    <p class="rd">2011년 이후 첫 미·일 공동개입입니다. 그런데 진짜 관전 포인트는 개입 자체가 아니라 달러를 어디서 구하느냐였습니다.</p>
+    <div class="rb"><span>환율</span><span>미국국채</span><span>카드 8</span><span>서술 5분</span></div>
+  </div></a>
+<a class="row" href="p/n9.html">
+  <img src="img/n9-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div>
+    <div class="rm"><span class="n">No.08</span><span>2026.08.03</span></div>
+    <div class="rt">중국이 개발했다는 DUV(노광기)의 정체는?</div>
+    <p class="rd">“중국발 DUV 쇼크”에 ASML 주가가 하루 5.7% 빠졌습니다. 그런데 양산한다는 장비를 뜯어보면 ASML의 2008년 모델입니다.</p>
+    <div class="rb"><span>반도체</span><span>중국</span><span>카드 9</span><span>서술 7분</span></div>
+  </div></a>
+<a class="row" href="p/n7.html">
+  <img src="img/n7-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div>
+    <div class="rm"><span class="n">No.07</span><span>2026.08.02</span></div>
+    <div class="rt">SK하이닉스 1주가 일으킨 나비효과</div>
+    <p class="rd">국장에서는 1주가 체결되고 곧바로 회복돼 끝난 일이었습니다. 그런데 그 가격을 그대로 가져다 쓰던 곳에서 2분 만에 960계좌가 청산됐습니다.</p>
+    <div class="rb"><span>파생</span><span>시장구조</span><span>카드 8</span><span>서술 4분</span></div>
+  </div></a>
+<a class="row" href="p/n6.html">
+  <img src="img/n6-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div>
+    <div class="rm"><span class="n">No.06</span><span>2026.08.01</span></div>
+    <div class="rt">BTS는 그래미상 출품을 왜 거부했을까?</div>
+    <p class="rd">상을 못 받을까 봐 피한 게 아닙니다. 받을 가능성이 가장 높은 시점에 거부했습니다. 문제는 그 상이 어떤 상이냐였습니다.</p>
+    <div class="rb"><span>K팝</span><span>산업</span><span>카드 9</span><span>서술 5분</span></div>
+  </div></a>
+<a class="row" href="p/n5.html">
+  <img src="img/n5-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div>
+    <div class="rm"><span class="n">No.05</span><span>2026.08.01</span></div>
+    <div class="rt">원화는 왜 강해지고 있을까?</div>
+    <p class="rd">7월 초 1,550원이던 원달러가 월말 1,435원까지 왔습니다. 같은 기간 달러인덱스는 0.2% 내렸을 뿐이라, 원인을 안에서 찾아야 합니다.</p>
+    <div class="rb"><span>환율</span><span>금리</span><span>카드 12</span><span>서술 7분</span></div>
+  </div></a>
+</div>
+<div class="sect">2026년 7월 · 4편</div><div class="rows">
+<a class="row" href="p/n4.html">
+  <img src="img/n4-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div>
+    <div class="rm"><span class="n">No.04</span><span>2026.07.31</span></div>
+    <div class="rt">오늘 우리 국장은? (feat PCE)</div>
+    <p class="rd">6월 PCE가 6년 만에 전월 대비 떨어졌습니다. 그런데 연준이 왜 CPI가 아니라 PCE를 보게 됐는지를 알면 이 숫자가 달리 보입니다.</p>
+    <div class="rb"><span>연준</span><span>물가</span><span>카드 10</span><span>서술 5분</span></div>
+  </div></a>
+<a class="row" href="p/n2.html">
+  <img src="img/n2-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div>
+    <div class="rm"><span class="n">No.03</span><span>2026.07.31</span></div>
+    <div class="rt">늦게 올리는 FOMC 결과와 캐빈 워시 연준의장 기자회견 후기</div>
+    <p class="rd">금리는 동결됐지만 반대표 3명은 인하가 아니라 인상이었습니다. 그리고 새 의장은 앞으로 힌트를 주지 않겠다고 했습니다.</p>
+    <div class="rb"><span>연준</span><span>금리</span><span>카드 10</span><span>서술 6분</span></div>
+  </div></a>
+<a class="row" href="p/n3.html">
+  <img src="img/n3-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div>
+    <div class="rm"><span class="n">No.02</span><span>2026.07.30</span></div>
+    <div class="rt">서킷브레이커와 국민연금 근황</div>
+    <p class="rd">서킷브레이커는 28년간 6번 걸렸습니다. 올해는 7개월 만에 9번입니다. 그리고 예전과 달리 국민연금이 받아주지 않고 있습니다.</p>
+    <div class="rb"><span>국장</span><span>연금</span><span>시장구조</span><span>카드 9</span><span>서술 4분</span></div>
+  </div></a>
+<a class="row" href="p/n1.html">
+  <img src="img/n1-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div>
+    <div class="rm"><span class="n">No.01</span><span>2026.07.30</span></div>
+    <div class="rt">국장 하락의 숨은 원인 중 하나, 중국 자금이 빠져나가고 있나?</div>
+    <p class="rd">중국이 6월 23일 해외 우회 투자 통로를 막았습니다. 신규만이 아니라 갱신까지 막힌 탓에, 만기가 돌아오는 대로 청산이 이어지고 있습니다.</p>
+    <div class="rb"><span>중국</span><span>반도체</span><span>수급</span><span>카드 9</span><span>서술 5분</span></div>
+  </div></a>
+</div>
+<div class="sect">지난 묶음</div><div class="rows">
+<a class="row" href="p/jul.html">
+  <img src="img/j1-thumb.webp" alt="" loading="lazy" decoding="async" width="540" height="675">
+  <div><div class="rm"><span class="n">묶음</span><span>2026.07.25–29</span></div>
+  <div class="rt">7월 마지막 주, 열 편</div>
+  <p class="rd">구마모토 지진과 반도체 공급망, 우크라이나 권력구조, 엔비디아·오픈AI 순환금융,
+  CXMT 상장, 레버리지 ETF의 원금 감쇠까지.</p>
+  <div class="rb"><span>카드 53</span></div></div></a>
 </div>
 
-<h2 class="sec">지난 묶음</h2>
-<div class="list">
-  <a class="item" href="p/jul.html">
-    <img src="img/j1-thumb.png" alt="">
-    <div class="body">
-      <div class="meta"><span class="n">묶음</span><span>2026.07.25–29</span><span>10편</span></div>
-      <h3>7월 마지막 주, 열 편</h3>
-      <p>구마모토 지진과 반도체 공급망, 우크라이나 권력구조, 엔비디아·오픈AI 순환금융, CXMT 상장, 레버리지 ETF의 원금 감쇠까지.</p>
-      <div class="badges"><span class="b on">카드 53장</span><span class="b">서술 준비 중</span></div>
-    </div>
-  </a>
-</div>
-
-<footer>
-  <div><b>출처 : 메르의 블로그</b> — <a href="https://blog.naver.com/ranto28">blog.naver.com/ranto28</a></div>
-  <div>모든 편에 원문 링크를 싣고, 「메르의 한 줄」은 원문을 그대로 인용합니다. 본문 정리와 카드 구성은 원문을 바탕으로 재구성한 것이며, 저작권은 메르에게 있습니다.</div>
-</footer>
-
+<footer><b>출처 : 메르의 블로그</b> —
+<a href="https://blog.naver.com/ranto28">blog.naver.com/ranto28</a><br>
+메르 님의 허락을 받아 운영하는 개인 사이트입니다. 공식 사이트가 아닙니다.
+카드와 서술은 원문을 바탕으로 재구성한 것이며 저작권은 메르에게 있습니다.<br>
+정정·삭제 요청과 문의는 <a href="about.html">이곳</a>으로. 투자 판단의 근거로 삼지 마세요.</footer>
 </div></body></html>
