@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>중국이 개발했다는 DUV(노광기)의 정체는? · 메르 브리핑</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128225;</text></svg>">
+<style>
+  :root{
+    --paper:#EEF2F1;--surface:#fff;--line:#D3DEDC;--ink:#101617;--muted:#5C6B6B;
+    --accent:#1F5C63;--accent-soft:#E2ECEA;--brass:#9A7B12;--brass-soft:#F5EEDA;
+    --warn:#8C3A24;--warn-soft:#F7E9E4;
+    --shadow:0 1px 2px rgba(16,22,23,.06),0 8px 24px rgba(16,22,23,.07);
+    --serif:"Nanum Myeongjo",Batang,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Consolas,"D2Coding",monospace;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --paper:#0C1112;--surface:#151D1E;--line:#263334;--ink:#E6EDEC;--muted:#93A5A4;
+    --accent:#5FAFA4;--accent-soft:#17292A;--brass:#D9BE5F;--brass-soft:#241F0F;
+    --warn:#E0937C;--warn-soft:#2B1A15;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}}
+  *{box-sizing:border-box;word-break:keep-all;overflow-wrap:break-word}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.72;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:clamp(24px,4vw,48px) clamp(16px,4vw,36px) 90px}
+  .back{font-family:var(--mono);font-size:12px;color:var(--accent);text-decoration:none;
+    display:inline-block;margin-bottom:24px}
+  .back:hover{text-decoration:underline}
+
+  header{border-bottom:2px solid var(--ink);padding-bottom:22px}
+  .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted);display:flex;gap:11px;
+    flex-wrap:wrap;align-items:center;margin-bottom:13px}
+  .meta .n{color:var(--brass);font-weight:700;letter-spacing:.08em}
+  h1{font-family:var(--serif);font-size:clamp(26px,4.4vw,40px);line-height:1.24;margin:0 0 14px;
+    font-weight:700;letter-spacing:-.015em}
+  .lede{margin:0;color:var(--muted);font-size:16px;max-width:62ch}
+
+  .tabs{display:flex;gap:8px;margin:26px 0 6px}
+  .tab{flex:0 0 auto;font-family:var(--sans);font-size:14.5px;font-weight:700;cursor:pointer;
+    padding:11px 22px;border-radius:4px;border:1px solid var(--line);background:var(--surface);
+    color:var(--muted)}
+  .tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .hint{font-size:12.5px;color:var(--muted);margin:0 0 6px}
+
+  .panel[hidden]{display:none}
+
+  /* 카드 */
+  .deck{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:16px 2px 22px}
+  .card{scroll-snap-align:start;flex:0 0 clamp(252px,74vw,300px);aspect-ratio:4/5;
+    background:var(--surface);border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow);
+    padding:22px 20px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .card::after{content:attr(data-idx);position:absolute;right:14px;bottom:11px;
+    font-family:var(--mono);font-size:10px;color:var(--muted);opacity:.6}
+  .clabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:12px}
+  .ctitle{font-family:var(--serif);font-size:21px;line-height:1.32;font-weight:700;margin:0 0 12px}
+  .ctext{font-size:14.5px;line-height:1.78;margin:0}
+  .ctext em{font-style:normal;font-weight:600;box-shadow:inset 0 -.34em 0 var(--accent-soft)}
+  .ctext .def{display:block;margin-top:10px;padding-top:9px;border-top:1px dotted var(--line);
+    font-size:12.5px;color:var(--muted);line-height:1.6}
+  .cfoot{margin-top:auto;padding-top:14px;font-family:var(--mono);font-size:10.5px;
+    color:var(--muted);border-top:1px solid var(--line)}
+  .num{float:right;margin:2px 0 4px 10px;font-family:var(--mono);font-size:9.5px;color:var(--muted);
+    opacity:.55;border:1px solid var(--line);border-radius:2px;padding:1px 5px}
+  .card.cover{background:var(--accent);border-color:var(--accent)}
+  .card.cover .clabel{color:rgba(255,255,255,.72)}
+  .card.cover .ctitle{color:#fff;font-size:24px}
+  .card.cover .ctext{color:rgba(255,255,255,.9)}
+  .card.cover .ctext em{box-shadow:inset 0 -.34em 0 rgba(255,255,255,.2);color:#fff}
+  .card.cover .cfoot{color:rgba(255,255,255,.66);border-top-color:rgba(255,255,255,.22)}
+  .card.cover::after{color:rgba(255,255,255,.6)}
+  .card.caveat{background:var(--warn-soft);border-color:var(--warn);border-style:dashed}
+  .card.caveat .clabel{color:var(--warn)}
+
+  /* 서술 */
+  .read{max-width:66ch;margin:22px auto 0}
+  .read p{font-size:17px;line-height:1.92;margin:0 0 20px}
+  .read h2{font-family:var(--serif);font-size:23px;font-weight:700;margin:38px 0 14px;line-height:1.35}
+  .read b{font-weight:700}
+  .read figure{margin:32px 0}
+  .read img{width:100%;border-radius:6px;display:block}
+  .read figcaption{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px}
+  .pull{margin:30px 0;padding:22px 24px;background:var(--accent-soft);border-left:5px solid var(--accent);
+    border-radius:0 5px 5px 0;font-family:var(--serif);font-size:19px;line-height:1.6}
+  .caveat-box{margin:34px 0 0;padding:22px 24px;background:var(--warn-soft);
+    border-left:5px solid var(--warn);border-radius:0 5px 5px 0}
+  .caveat-box b{color:var(--warn);display:block;margin-bottom:8px;font-family:var(--mono);
+    font-size:11.5px;letter-spacing:.1em}
+  .caveat-box p{font-size:15.5px;line-height:1.8;margin:0 0 10px}
+  .caveat-box p:last-child{margin:0}
+
+  .orig{margin-top:44px;padding:22px 24px;border:1px solid var(--line);background:var(--surface);
+    border-radius:6px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .orig b{display:block;font-size:15px;margin-bottom:3px}
+  .orig span{font-size:13px;color:var(--muted)}
+  .orig a{background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:14px;
+    padding:12px 22px;border-radius:4px;white-space:nowrap}
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--muted)}
+  footer a{color:var(--accent);font-weight:600}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+</style></head><body><div class="wrap">
+<a class="back" href="../index.html">&larr; 메르 브리핑</a>
+<header>
+  <div class="meta"><span class="n">No.08</span><span>2026.08.03</span><span>피드메이커(경제)</span><span>원문 4,268자</span></div>
+  <h1>중국이 개발했다는 DUV(노광기)의 정체는?</h1>
+  <p class="lede">“중국발 DUV 쇼크”에 ASML 주가가 하루 5.7% 빠졌습니다. 그런데 양산한다는 장비를 뜯어보면 <b>ASML의 2008년 모델</b>입니다.</p>
+</header>
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" aria-selected="true" aria-controls="p-card" id="t-card">카드로 훑기 · 9장</button>
+  <button class="tab" role="tab" aria-selected="false" aria-controls="p-read" id="t-read">서술로 읽기 · 7분</button>
+</div>
+<section class="panel" id="p-card" role="tabpanel" aria-labelledby="t-card">
+<p class="hint">옆으로 넘겨보세요. 오른쪽 위 회색 숫자는 원문 문단 번호입니다.</p>
+<div class="deck"><article class="card cover" data-idx="1/9"><div class="clabel">표지</div><h3 class="ctitle">중국이 만들었다는<br>2008년 모델</h3><p class="ctext">쇼크라는 기사에 ASML이 <em>하루 −5.7%</em>. 진짜인지 따져봤다.</p><div class="cfoot">반도체 · 노광기</div></article><article class="card" data-idx="2/9"><div class="clabel">왜 노광기인가</div><p class="ctext"><span class="num">06–10</span>반도체 8개 공정 중 노광이 핵심이다. 웨이퍼 위에 <em>빛으로 회로를 새기는</em> 단계다.<br><br>전체 생산시간의 <em>60%</em>, 비용의 <em>35%</em>를 잡아먹는다.<span class="def">설계도이자 반도체 그 자체가 만들어지는 단계.</span></p><div class="cfoot">가장 중요한 공정</div></article><article class="card" data-idx="3/9"><div class="clabel">왜 ASML만 만드나</div><p class="ctext"><span class="num">15–25</span>진공에서 움직이는 미세한 주석 알갱이를 레이저로 맞춰 <em>초당 5만 번</em> 플라스마로 만드는 기계다.<br><br>정작 ASML이 직접 만드는 부품은 <em>15%</em>뿐 — 독일 광학, 미국 광원, 일본 부품이 합쳐진다.<span class="def">1997년 인텔이 일본(캐논·니콘)에 의존하기 싫어 중립국 네덜란드 기업을 택했다. ASML이 미국 요구를 무시 못 하는 이유다.</span></p><div class="cfoot">조립된 독점</div></article><article class="card" data-idx="4/9"><div class="clabel">중국이 가진 것</div><p class="ctext"><span class="num">30–36</span>부도난 HSMC를 정부가 인수해 화웨이에 넘겼는데, 거기에 <em>포장도 안 뜯은 ASML 1980Di</em>가 있었다.<br><br>이번 개발 주체인 상하이 위량성은 <em>화웨이 엔지니어들이 대거 포진한</em> 정부지원 스타트업이다.<span class="def">역설계했다는 이야기가 나오는 배경.</span></p><div class="cfoot">7나노급 DUV 1대</div></article><article class="card" data-idx="5/9"><div class="clabel">뜯었는데 못 붙였다</div><p class="ctext"><span class="num">38–46</span>2025년 10월, 중국이 ASML에 수리를 요청했다. 기사가 가보니 <em>분해해놓고 조립에 실패한 상태</em>였다.<br><br>노광기는 광원·렌즈·받침대가 나노미터 단위로 정렬돼 있고, 공장에서 몇 주에 걸쳐 맞춘 세팅이다. 뜯는 순간 어긋난다.<span class="def">게다가 소프트웨어 잠금장치가 걸려 있어, 되돌리려면 ASML만 가진 키와 절차가 필요하다.</span></p><div class="cfoot">복제가 안 되는 이유</div></article><article class="card" data-idx="6/9"><div class="clabel">그래서 만든 게 1950i</div><p class="ctext"><span class="num">47, 59–64</span>1980Di 복제에 실패하고 <em>구형인 1950i</em>를 만든 수준이다.<br><br>1980Di는 2015년 모델, <em>1950i는 2008년 모델</em>이다.<br><br>ASML이 28나노급 1950i에서 7나노급 1980Di로 가는 데 <em>7년</em>이 걸렸다.</p><div class="cfoot">ASML의 2008년 수준</div></article><article class="card" data-idx="7/9"><div class="clabel">부품은 아직 못 따라간다</div><p class="ctext"><span class="num">50–55</span>광원은 국산화했지만 <em>6kHz·60W</em>로 ASML의 <em>90W</em>에 못 미친다.<br><br>렌즈는 검증을 통과했지만 정밀도가 <em>30nm급</em>으로, 독일 자이스의 <em>10nm 미만</em>에 못 미쳐 결국 자이스 렌즈를 수입해 만들었다.</p><div class="cfoot">핵심 부품의 벽</div></article><article class="card" data-idx="8/9"><div class="clabel">그래도 의미는 있다</div><p class="ctext"><span class="num">65–73</span>중국은 EUV가 2019년부터 봉쇄됐고, 2024년 9월엔 1980i까지 수입이 막혔다. <em>기존 장비의 성능 개선·유지보수도 1% 상한</em>으로 묶였다.<br><br>규제 임박을 알고 <em>1980i 90대를 사재기</em>했지만 손볼 수가 없다.<span class="def">한 세대 낮더라도 국산으로 내놓자는 판단. 국산화율 70%는 뒤집으면 <b>30%는 여전히 수입</b>이라는 뜻이다.</span></p><div class="cfoot">어쩔 수 없는 선택</div></article><article class="card seal" data-idx="9/9"><div class="clabel">메르의 한 줄</div><p class="ctext">“신상인 EUV는 꿈도 꾸지 못하고, 2015년 모델인 1980Di도 시간이 많이 필요할 것 같음. 1980Di를 분해하고 재조립에 실패해서 ASML에게 수리를 요청한 것이 2025년 10월임. <em>아직은 시간이 꽤 필요한 상황 같음.</em>”</p><div class="cfoot">원문 인용</div></article></div></section>
+<section class="panel" id="p-read" role="tabpanel" aria-labelledby="t-read" hidden><div class="read"><p>2026년 7월 27일, “상하이의 한 기업이 침지 DUV 노광장비를 만들기 시작했다”는 기사가 나왔습니다. 시장은 즉각 반응했죠. ASML 주가가 하루 5.7%(장중 7%) 밀렸고 반도체 장비주도 같이 빠졌습니다. 이게 진짜인지 따져볼 필요가 있습니다.</p><h2>노광기가 왜 급소인가</h2><p>반도체를 만들려면 웨이퍼·산화·노광·패키징 등 8개 단계를 거치는데, 가장 중요한 게 노광입니다. 실리콘 웨이퍼 위에 회로를 빛으로 새기는 단계로, 설계도이자 반도체 그 자체가 만들어지는 과정이죠. 전체 생산시간의 60%, 비용의 35%가 여기서 나갑니다.</p><figure><img src="../img/n9_1.jpg" alt=""><figcaption>진공에서 움직이는 주석 알갱이를 레이저로 초당 5만 번 맞춰 플라스마로 만드는 기계 — 제대로 된 노광기는 ASML만 만든다</figcaption></figure><p>흥미로운 건 ASML이 이 기계의 부품 중 직접 만드는 게 15% 정도라는 점입니다. 독일의 광학기술, 미국의 광원기술, 일본 부품이 합쳐져 완성됩니다. 그리고 이 조립 구조에는 역사가 있습니다.</p><p>1997년 인텔이 극자외선 노광기 개발에 투자하기로 하면서 협력업체를 찾았는데, 당시 장비 강자는 일본의 캐논과 니콘이었습니다. 일본 업체들과 경쟁하던 인텔은 핵심 장비를 일본에 의존하고 싶지 않았고, 미·일 반도체 전쟁에서 중립이던 네덜란드 기업 ASML이 대안으로 선택됐습니다. ASML이 네덜란드 기업이면서도 미국 정부의 요구를 무시할 수 없는 이유가 이겁니다.</p><h2>중국이 손에 쥔 것</h2><p>우한의 HSMC는 중국 최초로 7나노 이하 시스템반도체를 만들겠다며 주목받았지만 자금난으로 부도가 났습니다. 중국 정부가 이를 인수해 화웨이에 넘겼는데, HSMC에는 <b>포장도 뜯지 않은 ASML 1980Di 노광기</b>가 있었습니다.</p><p>이번에 개발했다는 장비의 주체인 상하이 위량성은 화웨이 엔지니어들이 대거 포진한 정부지원 스타트업입니다. 화웨이가 확보한 그 1980Di를 역설계했다는 이야기가 나오는 배경이죠.</p><h2>그런데 뜯었다가 못 붙였다</h2><p>2025년 10월, 중국은 ASML에 DUV 수리를 요청합니다. ASML 기사가 현장에 가보니 장비를 분해해놓고 <b>조립에 실패한 상태</b>였다고 합니다.</p><p>노광기는 단순 분해·재조립도 어려운 기계입니다. 광원·렌즈·웨이퍼 받침대가 나노미터 단위로 정렬돼 있어야 회로가 제대로 새겨지는데, 이 세팅은 공장에서 특수 장비와 수백 개 기준점을 잡아가며 몇 주에 걸쳐 맞춘 겁니다. 뜯는 순간 렌즈와 거울의 정렬이 어긋나죠.</p><div class="pull">게다가 1980Di에는 소프트웨어 잠금장치가 걸려 있습니다. 되돌리려면 ASML만 가진 키와 절차가 필요하도록 만들어놨습니다.</div><h2>그래서 나온 게 2008년 모델</h2><p>결국 1980Di 복제에는 실패하고, 구형인 1950i를 만든 수준입니다. 여기서 연도가 중요합니다. <b>1980Di는 2015년 모델, 1950i는 2008년 모델</b>입니다. 이번에 양산한다는 건 EUV가 아니라 DUV이고, 그중에서도 2008년 사양이라는 뜻이죠.</p><p>참고로 ASML이 28나노급 1950i에서 7나노급 1980Di로 가는 데 7년이 걸렸습니다. 중국은 지금 DUV 제조 능력 면에서 ASML의 2008년 수준에 와 있는 겁니다.</p><p>부품도 아직 벽이 있습니다. 광원은 자체 제작에 성공했지만 6kHz·60W로 ASML의 90W에 못 미치고, 렌즈는 검증을 통과했지만 정밀도가 30nm급이라 독일 자이스의 10nm 미만에 못 미쳐 결국 자이스 렌즈를 수입해 만들었다고 합니다.</p><h2>그래도 중국 입장에선 의미가 있다</h2><p>중국은 EUV가 2019년부터 봉쇄됐고, 2023년 말부터 상위 모델, 2024년 9월엔 1970i·1980i까지 수입이 막혔습니다. 더 아픈 건 신규 판매만이 아니라 <b>기존 장비의 성능을 1% 이상 개선해주는 것도 금지</b>됐다는 점입니다.</p><p>규제가 임박한 걸 알고 2023년 9월부터 1년간 1980i를 90대 사재기했지만, 서비스 규제 때문에 성능 개선도 부품 교체도 유지보수도 어려운 상황이 됐습니다. 한 세대 낮더라도 손볼 수 있는 국산 장비를 내놓자는 판단이 나온 배경입니다.</p><p>이건 개별 스타트업의 성과가 아닙니다. SMEE가 화웨이·SMIC와 기술혁신 연합체를 구성하고, 선전의 SiCarrier가 부품사들을 규합했습니다. 국가 역량이 집중되고 있는 건 분명합니다. 다만 국산화율 70%라는 숫자는 뒤집으면 <b>핵심 30%는 여전히 수입해야 만들 수 있다</b>는 뜻이기도 합니다.</p><div class="caveat-box"><b>메르의 한 줄</b><p>“중국이 개발했다는 DUV는 ASML의 2008년 모델인 1950i와 비슷한 성능임. 광원과 렌즈 등 주요 부품이 미국과 독일 정품에 비해 성능이 떨어지니 어쩔 수 없는 선택으로 보임.</p><p><b>“신상인 EUV는 꿈도 꾸지 못하고, 2015년 모델인 1980Di도 시간이 많이 필요할 것 같음. 아직은 시간이 꽤 필요한 상황 같음.”</b></p></div></div></section></div>
+<div class="orig">
+  <div><b>원문 전체 보기</b><span>메르의 블로그 · 2026.08.03 발행</span></div>
+  <a href="https://blog.naver.com/ranto28/224365657673">네이버 블로그에서 읽기</a>
+</div>
+<footer><b>출처 : 메르의 블로그</b> &mdash;
+<a href="https://blog.naver.com/ranto28">blog.naver.com/ranto28</a><br>
+「메르의 한 줄」은 원문을 그대로 인용했습니다. 정리와 카드 구성은 원문을 바탕으로 재구성한 것이며,
+저작권은 메르에게 있습니다.</footer>
+<script>
+const tabs=document.querySelectorAll('.tab');
+tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(o=>{
+const s=o===t;o.setAttribute('aria-selected',s);
+document.getElementById(o.getAttribute('aria-controls')).hidden=!s;});}));
+</script>
+</div></body></html>

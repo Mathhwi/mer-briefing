@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>오늘 우리 국장은? (feat PCE) · 메르 브리핑</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128225;</text></svg>">
+<style>
+  :root{
+    --paper:#EEF2F1;--surface:#fff;--line:#D3DEDC;--ink:#101617;--muted:#5C6B6B;
+    --accent:#1F5C63;--accent-soft:#E2ECEA;--brass:#9A7B12;--brass-soft:#F5EEDA;
+    --warn:#8C3A24;--warn-soft:#F7E9E4;
+    --shadow:0 1px 2px rgba(16,22,23,.06),0 8px 24px rgba(16,22,23,.07);
+    --serif:"Nanum Myeongjo",Batang,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Consolas,"D2Coding",monospace;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --paper:#0C1112;--surface:#151D1E;--line:#263334;--ink:#E6EDEC;--muted:#93A5A4;
+    --accent:#5FAFA4;--accent-soft:#17292A;--brass:#D9BE5F;--brass-soft:#241F0F;
+    --warn:#E0937C;--warn-soft:#2B1A15;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}}
+  *{box-sizing:border-box;word-break:keep-all;overflow-wrap:break-word}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.72;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:clamp(24px,4vw,48px) clamp(16px,4vw,36px) 90px}
+  .back{font-family:var(--mono);font-size:12px;color:var(--accent);text-decoration:none;
+    display:inline-block;margin-bottom:24px}
+  .back:hover{text-decoration:underline}
+
+  header{border-bottom:2px solid var(--ink);padding-bottom:22px}
+  .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted);display:flex;gap:11px;
+    flex-wrap:wrap;align-items:center;margin-bottom:13px}
+  .meta .n{color:var(--brass);font-weight:700;letter-spacing:.08em}
+  h1{font-family:var(--serif);font-size:clamp(26px,4.4vw,40px);line-height:1.24;margin:0 0 14px;
+    font-weight:700;letter-spacing:-.015em}
+  .lede{margin:0;color:var(--muted);font-size:16px;max-width:62ch}
+
+  .tabs{display:flex;gap:8px;margin:26px 0 6px}
+  .tab{flex:0 0 auto;font-family:var(--sans);font-size:14.5px;font-weight:700;cursor:pointer;
+    padding:11px 22px;border-radius:4px;border:1px solid var(--line);background:var(--surface);
+    color:var(--muted)}
+  .tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .hint{font-size:12.5px;color:var(--muted);margin:0 0 6px}
+
+  .panel[hidden]{display:none}
+
+  /* 카드 */
+  .deck{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:16px 2px 22px}
+  .card{scroll-snap-align:start;flex:0 0 clamp(252px,74vw,300px);aspect-ratio:4/5;
+    background:var(--surface);border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow);
+    padding:22px 20px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .card::after{content:attr(data-idx);position:absolute;right:14px;bottom:11px;
+    font-family:var(--mono);font-size:10px;color:var(--muted);opacity:.6}
+  .clabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:12px}
+  .ctitle{font-family:var(--serif);font-size:21px;line-height:1.32;font-weight:700;margin:0 0 12px}
+  .ctext{font-size:14.5px;line-height:1.78;margin:0}
+  .ctext em{font-style:normal;font-weight:600;box-shadow:inset 0 -.34em 0 var(--accent-soft)}
+  .ctext .def{display:block;margin-top:10px;padding-top:9px;border-top:1px dotted var(--line);
+    font-size:12.5px;color:var(--muted);line-height:1.6}
+  .cfoot{margin-top:auto;padding-top:14px;font-family:var(--mono);font-size:10.5px;
+    color:var(--muted);border-top:1px solid var(--line)}
+  .num{float:right;margin:2px 0 4px 10px;font-family:var(--mono);font-size:9.5px;color:var(--muted);
+    opacity:.55;border:1px solid var(--line);border-radius:2px;padding:1px 5px}
+  .card.cover{background:var(--accent);border-color:var(--accent)}
+  .card.cover .clabel{color:rgba(255,255,255,.72)}
+  .card.cover .ctitle{color:#fff;font-size:24px}
+  .card.cover .ctext{color:rgba(255,255,255,.9)}
+  .card.cover .ctext em{box-shadow:inset 0 -.34em 0 rgba(255,255,255,.2);color:#fff}
+  .card.cover .cfoot{color:rgba(255,255,255,.66);border-top-color:rgba(255,255,255,.22)}
+  .card.cover::after{color:rgba(255,255,255,.6)}
+  .card.caveat{background:var(--warn-soft);border-color:var(--warn);border-style:dashed}
+  .card.caveat .clabel{color:var(--warn)}
+
+  /* 서술 */
+  .read{max-width:66ch;margin:22px auto 0}
+  .read p{font-size:17px;line-height:1.92;margin:0 0 20px}
+  .read h2{font-family:var(--serif);font-size:23px;font-weight:700;margin:38px 0 14px;line-height:1.35}
+  .read b{font-weight:700}
+  .read figure{margin:32px 0}
+  .read img{width:100%;border-radius:6px;display:block}
+  .read figcaption{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px}
+  .pull{margin:30px 0;padding:22px 24px;background:var(--accent-soft);border-left:5px solid var(--accent);
+    border-radius:0 5px 5px 0;font-family:var(--serif);font-size:19px;line-height:1.6}
+  .caveat-box{margin:34px 0 0;padding:22px 24px;background:var(--warn-soft);
+    border-left:5px solid var(--warn);border-radius:0 5px 5px 0}
+  .caveat-box b{color:var(--warn);display:block;margin-bottom:8px;font-family:var(--mono);
+    font-size:11.5px;letter-spacing:.1em}
+  .caveat-box p{font-size:15.5px;line-height:1.8;margin:0 0 10px}
+  .caveat-box p:last-child{margin:0}
+
+  .orig{margin-top:44px;padding:22px 24px;border:1px solid var(--line);background:var(--surface);
+    border-radius:6px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .orig b{display:block;font-size:15px;margin-bottom:3px}
+  .orig span{font-size:13px;color:var(--muted)}
+  .orig a{background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:14px;
+    padding:12px 22px;border-radius:4px;white-space:nowrap}
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--muted)}
+  footer a{color:var(--accent);font-weight:600}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+</style></head><body><div class="wrap">
+<a class="back" href="../index.html">&larr; 메르 브리핑</a>
+<header>
+  <div class="meta"><span class="n">No.04</span><span>2026.07.31</span><span>피드메이커(경제)</span><span>원문 2,285자</span></div>
+  <h1>오늘 우리 국장은? (feat PCE)</h1>
+  <p class="lede">6월 PCE가 6년 만에 전월 대비 떨어졌습니다. 그런데 <b>연준이 왜 CPI가 아니라 PCE를 보게 됐는지</b>를 알면 이 숫자가 달리 보입니다.</p>
+</header>
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" aria-selected="true" aria-controls="p-card" id="t-card">카드로 훑기 · 10장</button>
+  <button class="tab" role="tab" aria-selected="false" aria-controls="p-read" id="t-read">서술로 읽기 · 5분</button>
+</div>
+<section class="panel" id="p-card" role="tabpanel" aria-labelledby="t-card">
+<p class="hint">옆으로 넘겨보세요. 오른쪽 위 회색 숫자는 원문 문단 번호입니다.</p>
+<div class="deck"><article class="card cover" data-idx="1/10"><div class="clabel">표지</div><h3 class="ctitle">연준의 물가 잣대는<br>정치가 골랐다</h3><p class="ctext">표 안 깎고 적자를 줄일 카드가 필요했다. 그래서 <em>자를 바꿨다</em>.</p><div class="cfoot">PCE의 탄생</div></article><article class="card" data-idx="2/10"><div class="clabel">1995년의 숙제</div><p class="ctext"><span class="num">01–06</span>공화당이 42년 만에 상·하원을 동시 장악하고 <em>균형재정</em>을 내걸었다.<br><br>그런데 연방지출 1.5조 달러의 절반 이상이 연금 같은 <em>의무지출</em>이었다.<span class="def">세금을 더 걷거나 복지를 깎아야 하는데, 둘 다 표가 안 되는 일이었다.</span></p><div class="cfoot">구조적 막다른 길</div></article><article class="card" data-idx="3/10"><div class="clabel">그린스펀의 힌트</div><p class="ctext"><span class="num">07–13</span>1995년 청문회에서 그린스펀이 증언했다. <em>“CPI가 인플레이션을 과대계상하고 있다.”</em><br><br>연금 인상률과 소득세 구간이 전부 CPI에 연동돼 있었다. 즉 CPI를 손보면 <em>“연금을 깎자”고 표결할 필요가 없어진다</em>.<span class="def">숫자까지 제시했다. “연 1%p만 낮춰도 5년 뒤 적자가 550억 달러 줄어든다.”</span></p><div class="cfoot">가장 고통 없는 카드</div></article><article class="card" data-idx="4/10"><div class="clabel">압박과 반발</div><p class="ctext"><span class="num">16–17</span>깅리치 하원의장은 <em>“통계청이 CPI를 고치지 않으면 기관을 없애버리겠다”</em>고 했다.<br><br>은퇴자협회는 <em>“표결도 없이 연금을 깎는 스텔스 삭감”</em>이라 반발했지만 흐름을 못 바꿨다.</p><div class="cfoot">1995–96</div></article><article class="card" data-idx="5/10"><div class="clabel">근거가 아예 없진 않았다</div><p class="ctext"><span class="num">19–22</span>위원회는 1996년 <em>“CPI가 1.1%p 과대계상”</em>이라 결론지었다. 핵심은 <em>대체편향</em>이었다.<br><br>CPI는 고정된 장바구니가 기준이라, 소비자가 다른 품목으로 갈아타는 걸 반영 못 한다.<span class="def">배추가 오르면 사람들은 김치 대신 깍두기·총각김치로 옮겨가는데, CPI는 그걸 못 본다.</span></p><div class="cfoot">통계적으로는 사실</div></article><article class="card" data-idx="6/10"><div class="clabel">자가 바뀌다</div><p class="ctext"><span class="num">23–27</span>1996년 그린스펀: <em>“PCE가 단연 최고의 소비자물가지수다.”</em><br><br>2000년 2월 연준의 핵심 물가지수가 CPI에서 <em>PCE로 교체</em>된다.<br><br>PCE는 CPI보다 평균 <em>0.4%p 낮게</em> 나온다.<span class="def">연준 입장에선 CPI 2%보다 PCE 2%가 훨씬 쉬운 목표다. 목표를 낮추는 데 성공한 셈.</span></p><div class="cfoot">연준 목표 PCE 2%의 유래</div></article><article class="card" data-idx="7/10"><div class="clabel">그래서 이번 숫자</div><p class="ctext"><span class="num">28–33</span>6월 PCE가 전월 대비 <em>0.1%p 하락</em>했다. 전월 대비로 떨어진 건 <em>6년 만에 처음</em>이다.<br><br>마침 FOMC에서 반대표 3명이 <em>인하가 아니라 인상</em>을 주장한 참이었다.</p><div class="cfoot">매파가 셋 있는 위원회</div></article><article class="card" data-idx="8/10"><div class="clabel">왜 시장이 환호했나</div><p class="ctext"><span class="num">34–36</span>금리를 <em>올리자</em>는 사람이 셋 있는 위원회에서, 물가가 식었다는 데이터는 <em>매파의 힘을 빼는 숫자</em>다.<br><br>2분기 GDP까지 부진하게 나오며 ‘성장 둔화 + 물가 냉각’ 조합이 완성됐다.<span class="def">다음 회의에서 금리를 올릴지 모른다는 악재 하나가 제거된 것.</span></p><div class="cfoot">악재 제거</div></article><article class="card caveat" data-idx="9/10"><div class="clabel">다만</div><p class="ctext"><span class="num">37–38</span>이번 물가 냉각은 상당 부분 <em>에너지에서 나왔다</em>.<br><br>이란과의 일시 휴전이 6월 유가와 물가를 끌어내렸는데, <em>7월엔 다시 전쟁이 시작됐고 유가는 오르고 있다</em>.</p><div class="cfoot">지속성은 별개</div></article><article class="card seal" data-idx="10/10"><div class="clabel">메르의 한 줄</div><p class="ctext">“다음번 FOMC에 금리인상 가능성은 크게 낮아졌지만, 그 이후는 알 수가 없는 것임. … 연준은 목표를 낮췄고, 의회는 표가 깎이지 않으면서 재정적자를 줄이는 효과를 얻었음. <em>다들 숫자 마사지는 잘 하는 것 같음.</em>”</p><div class="cfoot">원문 인용</div></article></div></section>
+<section class="panel" id="p-read" role="tabpanel" aria-labelledby="t-read" hidden><div class="read"><p>6월 PCE가 전월 대비 0.1%p 떨어졌습니다. 전월 대비로 하락한 건 6년 만에 처음이고, 시장은 환호했습니다. 그런데 이 숫자를 제대로 읽으려면 <b>연준이 왜 하필 PCE를 보는지</b>부터 알아야 합니다.</p><h2>1995년, 표 안 깎고 적자를 줄이는 법</h2><p>공화당이 42년 만에 상·하원을 동시에 장악하고 균형재정을 내겁니다. 당시 미국 부채는 GDP의 48%로 1958년 이후 최고였는데, 문제는 지출 구조였어요. 연방지출 1.5조 달러 중 절반 이상이 사회보장연금 같은 의무지출이었고, 1998년이면 3분의 2까지 늘어날 전망이었습니다.</p><p>세금을 더 걷거나 복지를 깎지 않으면 적자를 잡을 수 없는 구조였죠. 그런데 둘 다 표가 안 되는 일입니다.</p><figure><img src="../img/n4_1.jpg" alt=""><figcaption>연금 인상률과 소득세 구간이 모두 CPI에 연동돼 있었다 — 자를 바꾸면 표결 없이 지출을 줄일 수 있다</figcaption></figure><h2>그린스펀이 낸 아이디어</h2><p>1995년 1월 상하원 예산위원회 합동 청문회에서 그린스펀이 증언합니다. “CPI가 인플레이션을 과대계상하고 있다.”</p><p>의원들이 여기서 감을 잡습니다. 연금 인상률과 소득세 구간이 전부 CPI에 연동돼 있으니, CPI가 과대계상됐다는 걸 증명하면 <b>“연금을 깎자”고 표결할 필요 없이</b> 지출 증가를 늦출 수 있거든요. 그린스펀은 숫자까지 제시했습니다. “CPI와 연동된 정부 프로그램의 인상률을 연 1%p만 낮춰도 5년 뒤 연방적자가 550억 달러 줄어든다.”</p><p>적자 감축은 공화당만의 숙제가 아니었으니, CPI 손보기는 가장 정치적 고통이 적은 매력적인 카드였습니다. 깅리치 하원의장은 “통계기관이 CPI를 고치지 않으면 기관 자체를 없애버리겠다”며 압박했고, 미국은퇴자협회는 “표결도 없이 연금을 깎는 스텔스 삭감”이라 반발했지만 흐름을 바꾸지 못했습니다.</p><h2>근거가 아예 없지는 않았다</h2><p>CPI에 통계적 문제가 있었던 것 자체는 사실이었기 때문입니다. 위원회는 1996년 12월 “CPI가 인플레이션을 1.1%p 과대계상하고 있다”고 결론 내렸습니다. 핵심 근거는 <b>대체편향</b>이었어요.</p><div class="pull">배추가격이 오르면 사람들은 김치 대신 깍두기나 총각김치로 갈아탑니다. CPI는 10만 개가 넘는 고정된 장바구니가 기준이라, 이런 행동을 반영하지 못합니다.</div><h2>그래서 자가 바뀌었다</h2><p>1996년 7월 FOMC에서 그린스펀은 “PCE가 단연 최고의 소비자물가지수”라고 발언합니다. 그리고 2000년 2월, 연준의 핵심 물가지수가 CPI에서 PCE로 바뀝니다. 연준의 인플레이션 목표가 ‘PCE 2%’인 역사적 배경이 이겁니다.</p><p>중요한 건 PCE가 CPI보다 평균 0.4%p 정도 낮게 나온다는 점입니다. 연준 입장에서 CPI 2%보다 PCE 2%가 훨씬 달성하기 쉬운 목표죠. <b>목표를 낮추는 데 성공한 겁니다.</b></p><h2>이번 숫자가 왜 호재였나</h2><p>7월 FOMC에서 금리는 동결됐는데 표결 구성이 시장의 신경을 건드렸습니다. 9대 3으로 동결이 결정됐지만, 반대표 3명이 인하가 아니라 <b>25bp 인상</b>을 주장하는 매파였거든요. 지금 연준에는 “내릴까 말까”가 아니라 “올리자”는 사람이 셋 있다는 뜻입니다.</p><p>그런 위원회에서 물가가 식었다는 데이터는 매파의 힘을 빼는 숫자입니다. 2분기 GDP까지 예상보다 부진하게 나오면서 성장 둔화와 물가 냉각이 겹쳤고, 다음 회의에서 금리를 올릴지 모른다는 악재 하나가 제거된 겁니다.</p><div class="caveat-box"><b>다만 — 지속성은 별개</b><p>이번 물가 냉각은 상당 부분 에너지에서 나온 결과였습니다. 이란과의 일시적인 휴전이 6월 유가와 물가를 끌어내렸는데, 7월 들어 미국은 이란과 다시 전쟁을 시작했고 유가는 오르는 상황입니다.</p><p>메르의 한 줄: “다음번 FOMC에 금리인상 가능성은 크게 낮아졌지만, 그 이후는 알 수가 없는 것임. … <b>다들 숫자 마사지는 잘 하는 것 같음.</b>”</p></div></div></section></div>
+<div class="orig">
+  <div><b>원문 전체 보기</b><span>메르의 블로그 · 2026.07.31 발행</span></div>
+  <a href="https://blog.naver.com/ranto28/224363037568">네이버 블로그에서 읽기</a>
+</div>
+<footer><b>출처 : 메르의 블로그</b> &mdash;
+<a href="https://blog.naver.com/ranto28">blog.naver.com/ranto28</a><br>
+「메르의 한 줄」은 원문을 그대로 인용했습니다. 정리와 카드 구성은 원문을 바탕으로 재구성한 것이며,
+저작권은 메르에게 있습니다.</footer>
+<script>
+const tabs=document.querySelectorAll('.tab');
+tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(o=>{
+const s=o===t;o.setAttribute('aria-selected',s);
+document.getElementById(o.getAttribute('aria-controls')).hidden=!s;});}));
+</script>
+</div></body></html>
