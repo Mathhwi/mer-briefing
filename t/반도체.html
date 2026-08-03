@@ -21,11 +21,12 @@
   .sect{font-size:var(--t1);font-weight:800;color:var(--dim);margin:var(--s4) 0 var(--s2);
     padding-bottom:var(--s1);border-bottom:1px solid var(--rule)}
   .rows{display:flex;flex-direction:column}
-  .row{display:grid;grid-template-columns:78px 1fr;gap:var(--s2);
+  .row{display:grid;grid-template-columns:78px 1fr;gap:var(--s2);align-items:start;
     padding:var(--s3) 0;border-bottom:1px solid var(--rule);text-decoration:none}
   @media (min-width:700px){ .row{grid-template-columns:104px 1fr} }
   .row:hover .rt{color:var(--seal)}
-  .row img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:var(--wash)}
+  .row img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;display:block;
+    align-self:start;background:var(--wash)}
   .rm{font-family:var(--num);font-size:11px;color:var(--dim);display:flex;
     gap:var(--s2);flex-wrap:wrap;align-items:center}
   .rm .n{color:var(--seal);font-weight:700}
