@@ -43,6 +43,17 @@
     '  margin:8px 0;min-height:44px}',
     '#ask .keybox button{padding:10px 16px;border:1px solid var(--ink);background:var(--ink);',
     '  color:var(--paper);font-weight:700;cursor:pointer;min-height:44px}',
+    '#fab{position:fixed;z-index:58;right:16px;bottom:16px;padding:14px 18px;',
+    '  border-radius:999px;border:1px solid var(--ink);background:var(--ink);',
+    '  color:var(--paper);font-size:15px;font-weight:800;cursor:pointer;',
+    '  box-shadow:0 4px 16px rgba(0,0,0,.22);min-height:48px;display:flex;',
+    '  align-items:center;gap:7px}',
+    '@media (max-width:700px){#fab{bottom:calc(16px + env(safe-area-inset-bottom))}}',
+    '#ask .starters{padding:0 14px 14px}',
+    '#ask .starters button{display:block;width:100%;text-align:left;font-size:14px;',
+    '  padding:11px 12px;margin-bottom:6px;border:1px solid var(--rule);',
+    '  background:transparent;color:var(--ink);cursor:pointer;min-height:44px;line-height:1.5}',
+    '#ask .starters button:hover{border-color:var(--seal);color:var(--seal)}',
     '#pill{position:fixed;z-index:59;display:none;padding:8px 12px;font-size:13px;',
     '  font-weight:700;background:var(--ink);color:var(--paper);border:0;cursor:pointer;',
     '  min-height:40px}',
@@ -62,6 +73,11 @@
   pill.id = 'pill'; pill.textContent = '물어보기';
   pill.setAttribute('data-ask-ui', '');
   document.body.appendChild(pill);
+
+  var fab = document.createElement('button');
+  fab.id = 'fab'; fab.setAttribute('data-ask-ui', '');
+  fab.innerHTML = '<span>?</span> 이 글 물어보기';
+  document.body.appendChild(fab);
 
   var $sel = box.querySelector('.sel'), $chips = box.querySelector('.chips'),
       $body = box.querySelector('.body');
@@ -108,6 +124,7 @@
     $body.textContent = '';
     box.classList.add('on'); pill.classList.remove('on');
     if (!touch && rect) {
+      box.style.bottom = 'auto'; box.style.right = 'auto';
       var top = rect.bottom + 8;
       if (top + 340 > innerHeight) top = Math.max(12, rect.top - 348);
       box.style.top = top + 'px';
@@ -203,6 +220,44 @@
         g.d + '</div>';
     });
   }
+
+  // ── 진입점 0: 항상 떠 있는 버튼 → 글 전체 질문 ──
+  fab.onclick = function () {
+    cur = '';
+    $sel.textContent = CTX.title;
+    $chips.innerHTML = '';
+    $body.innerHTML = '';
+    var wrap = document.createElement('div');
+    wrap.className = 'starters';
+    var qs = (CTX.glossary || []).slice(0, 3).map(function (g) {
+      return [g.t + '가 뭔가요?', '이 글에서 ' + g.t + '가 무엇인지 쉽게 설명해 주세요.'];
+    });
+    qs.unshift(['이 글 핵심만 3줄로', '이 글의 핵심을 3줄로 정리해 주세요.']);
+    qs.forEach(function (q) {
+      var b = document.createElement('button');
+      b.textContent = q[0];
+      b.onclick = function () { cur = ''; $body.textContent = '…'; wrap.remove(); run(q[1]); };
+      wrap.appendChild(b);
+    });
+    var f = document.createElement('form');
+    f.style.cssText = 'display:flex;gap:6px;margin-top:10px';
+    f.innerHTML = '<input placeholder="직접 물어보기" style="flex:1;padding:11px;' +
+      'border:1px solid var(--rule);background:var(--paper);color:var(--ink);' +
+      'font-size:15px;min-height:44px"><button style="padding:11px 16px;' +
+      'border:1px solid var(--ink);background:var(--ink);color:var(--paper);' +
+      'font-weight:700;min-height:44px">물어보기</button>';
+    f.onsubmit = function (e) {
+      e.preventDefault();
+      var v = f.querySelector('input').value.trim();
+      if (!v) return;
+      cur = ''; $body.textContent = '…'; wrap.remove(); run(v);
+    };
+    wrap.appendChild(f);
+    $body.appendChild(wrap);
+    box.classList.add('on'); pill.classList.remove('on');
+    if (!touch) { box.style.top = 'auto'; box.style.bottom = '80px';
+                  box.style.left = 'auto'; box.style.right = '16px'; }
+  };
 
   // ── 진입점 1: <em> 용어 원탭 ──────────────────
   document.addEventListener('click', function (e) {
